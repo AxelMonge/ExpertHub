@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+  <title>Main Page - ExpertHub</title>
+</head>
+<body>
+  <nav class="navbar">
+    <a href="#" class="logo" [routerLink]="['/']">ExpertHub</a>
+    <div class="menu-toggle" (click)="toggleMenu()">☰</div>
+    <div class="links">
+      <a href="#" [routerLink]="['/']" class="nav-link">Inicio</a>
+      <a href="#" (click)="scrollTo('professionals')" class="nav-link">Profesionales</a>
+    </div>
+    <div class="login">
+      <button class="signup" (click)="logout()">Cerrar Sesión</button>
+    </div>
+  </nav>
+
+  <h2 class="separator" id="professionals">Lista de Profesionales</h2>
+
+  <div class="nft-shop section">
+    <div class="nft-list">
+      @for (prof of professionals; track prof.id) {
+        <div class="item">
+          <img src="/assets/profile-placeholder-1.jpg" alt="{{prof.name}}">
+          <div class="info">
+            <div>
+              <h5>{{prof.name}}</h5>
+              <p class="title">{{prof.specialty}}</p>
+              <div class="exp">
+                <i class='bx bx-time-five'></i>
+                <p>{{prof.experience}} años exp.</p>
+              </div>
+            </div>
+            <p>Disponible</p>
+          </div>
+          <div class="bid">
+            <p>Activo</p>
+            <a [routerLink]="['/profile', prof.id]" class="contact-button">Ver Detalles</a>
+          </div>
+        </div>
+      } @empty {
+        <p>No hay profesionales disponibles.</p>
+      }
+    </div>
+  </div>
+</body>
+</html>
