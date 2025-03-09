@@ -1,0 +1,15 @@
+<mat-toolbar color="primary">
+  <span>Perfil</span>
+</mat-toolbar>
+<mat-card>
+  <mat-card-title>Perfil del Profesional</mat-card-title>
+  <mat-card-content>
+    @if (professional) {
+      <p><strong>Nombre:</strong> {{ professional.name }}</p>
+      <p><strong>Especialidad:</strong> {{ professional.specialty }}</p>
+      <p><strong>Experiencia:</strong> {{ professional.experience }} años</p>
+    } @else {
+      <p>Profesional no encontrado.</p>
+    }
+  </mat-card-content>
+</mat-card>
