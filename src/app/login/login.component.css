@@ -28,7 +28,7 @@
 
 .login-card h2 {
     font-size: 32px;
-    color: #FC6D26;
+    color: #000000;
     margin-bottom: 20px;
     text-align: center;
 }
@@ -55,14 +55,14 @@
 
 .form-group input:focus {
     outline: none;
-    border-color: #FC6D26;
+    border-color: #000000;
 }
 
 .login-button {
     width: 100%;
     padding: 12px;
     border: none;
-    background-color: #FC6D26;
+    background-color: #000000;
     color: #fff;
     border-radius: 10px;
     font-size: 16px;
@@ -71,7 +71,7 @@
 }
 
 .login-button:hover {
-    background-color: #E65B14;
+    background-color: #000000;
     transform: scale(1.05);
 }
 
@@ -81,13 +81,13 @@
 }
 
 .signup-link a {
-    color: #FC6D26;
+    color: #000000;
     text-decoration: none;
     transition: color 0.3s ease;
 }
 
 .signup-link a:hover {
-    color: #E65B14;
+    color: #000000;
     text-decoration: underline;
 }
 
