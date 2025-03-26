@@ -1,295 +1,857 @@
-@import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+@import url('https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css');
 
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Ubuntu', sans-serif;
+    margin: 0;
+    padding: 0;
+    outline: none;
+    box-sizing: border-box;
+    font-family: "Ubuntu", sans-serif;
 }
 
 a {
-  text-decoration: none;
-  color: #000;
+    text-decoration: none;
+    color: #111;
+    font-size: 14px;
 }
 
-img {
-  object-fit: cover;
+p {
+    color: #a4a8ac;
 }
 
-body {
-  background-color: #f1f1f1;
-  overflow-x: hidden;
-  padding-top: 80px;
+:host {
+    display: flex;
+    width: 100%;
+    height: 100vh;
+    background: #f5f5f5;
+    margin: 0;
+    padding: 0;
 }
 
-.navbar {
-  padding: 0 80px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 80px;
-  background-color: #fff;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 1000;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
+.sidebar {
+    flex: 1;
+    background: #111;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: all 0.3s ease;
+    min-width: 200px;
 }
 
-.navbar:hover {
-  background-color: #f8f8f8;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+.sidebar.animate-sidebar {
+    animation: slideInLeft 0.5s ease-out forwards;
 }
 
-.navbar .logo {
-  font-size: 33px;
-  color: #FC6D26;
-  font-weight: 600;
-  transition: transform 0.3s ease;
+@keyframes slideInLeft {
+    0% {
+        opacity: 0;
+        transform: translateX(-100%);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
 }
 
-.navbar .logo:hover {
-  transform: scale(1.1);
+.sidebar .logo {
+    font-size: 24px;
+    font-weight: 500;
+    color: #eee;
 }
 
-.navbar .menu-toggle {
-  display: none;
-  font-size: 24px;
-  cursor: pointer;
+.sidebar .side-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 }
 
-.navbar .links {
-  display: flex;
-  align-items: center;
+.sidebar .side-nav .item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
 }
 
-.navbar .links .nav-link {
-  margin-left: 20px;
-  font-size: 16px;
-  color: #333;
-  transition: color 0.3s ease, transform 0.3s ease;
-  position: relative;
+.sidebar .side-nav .item.animate-item {
+    animation: bounceIn 0.4s ease-out forwards;
+    animation-delay: var(--delay);
 }
 
-.navbar .links .nav-link:hover {
-  color: #FC6D26;
-  transform: translateY(-2px);
+@keyframes bounceIn {
+    0% {
+        opacity: 0;
+        transform: translateY(20px) scale(0.8);
+    }
+    60% {
+        transform: translateY(-5px) scale(1.05);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
 }
 
-.navbar .links .nav-link::after {
-  content: '';
-  position: absolute;
-  width: 0;
-  height: 2px;
-  bottom: -5px;
-  left: 0;
-  background-color: #FC6D26;
-  transition: width 0.3s ease;
+.sidebar .side-nav .item a {
+    color: #a4a8ac;
 }
 
-.navbar .links .nav-link:hover::after {
-  width: 100%;
+.sidebar .side-nav .item i {
+    font-size: 20px;
+    color: #a4a8ac;
 }
 
-.navbar .login button {
-  padding: 8px 14px;
-  border: none;
-  cursor: pointer;
-  background-color: #000;
-  color: #fff;
-  border-radius: 4px;
-  transition: background-color 0.3s ease, transform 0.3s ease;
+.sidebar .side-nav .item.active {
+    background: #fafafa;
 }
 
-.navbar .login button:hover {
-  background-color: #FC6D26;
-  transform: scale(1.1);
+.sidebar .side-nav .item.active a,
+.sidebar .side-nav .item.active i {
+    color: #111;
+    font-weight: bold;
 }
 
-h2.separator {
-  padding: 0 80px;
-  font-size: 40px;
-  margin-top: 10px;
+.sidebar .side-nav .item:hover {
+    background: #333;
 }
 
-.nft-shop.section {
-  padding: 0 80px;
-  margin-top: 30px;
+.sidebar .side-nav .item:hover a,
+.sidebar .side-nav .item:hover i {
+    color: #fafafa;
 }
 
-.nft-shop.section .nft-list {
-  padding: 40px 0;
-  display: flex;
-  justify-content: space-between;
-  gap: 20px;
+.sidebar .side-profile {
+    background: #fafafa;
+    padding: 14px 10px;
+    border-radius: 10px;
 }
 
-.nft-shop.section .nft-list .item {
-  padding: 20px;
-  background: #fff;
-  border-radius: 18px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease;
-  animation: slide-up 0.5s ease-out;
+.sidebar .side-profile.animate-profile {
+    animation: fadeInUp 0.5s ease-out forwards;
+    animation-delay: var(--delay);
 }
 
-.nft-shop.section .nft-list .item:hover {
-  transform: translateY(-5px);
+@keyframes fadeInUp {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
-.nft-shop.section .nft-list .item img {
-  width: 280px;
-  height: 280px;
-  border-radius: 18px;
+.sidebar .side-profile .info img {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
 }
 
-.nft-shop.section .nft-list .item .info {
-  padding: 12px 0;
-  border-bottom: 1px solid #edecec;
+.sidebar .side-profile .info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-.nft-shop.section .nft-list .item .info h5 {
-  font-size: 18px;
-  color: #333;
+.sidebar .side-profile .info a {
+    font-weight: bold;
+    margin-top: 8px;
 }
 
-.nft-shop.section .nft-list .item .info .exp {
-  margin-top: 10px;
-  display: flex;
-  align-items: center;
-  gap: 5px;
+.sidebar .side-profile .info p {
+    font-size: 12px;
+    color: #666869;
+    margin: 6px 0 20px;
 }
 
-.nft-shop.section .nft-list .item .exp i {
-  font-size: 22px;
-  color: #FC6D26;
+.sidebar .side-profile .skills .skill-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 10px;
 }
 
-.nft-shop.section .nft-list .item .exp p {
-  font-size: 12px;
-  color: #FC6D26;
+.sidebar .side-profile .skills .skill-tags .item {
+    padding: 6px;
+    border-radius: 4px;
+    background: #e7e7e7;
+    font-size: 10px;
+    font-weight: 500;
+    color: #666869;
 }
 
-.nft-shop.section .nft-list .item .info > p {
-  font-size: 12px;
-  color: #989898;
-  margin-top: 5px;
+.sidebar .side-profile button {
+    margin-top: 16px;
+    width: 100%;
+    border: none;
+    padding: 10px;
+    background: #111;
+    color: #fafafa;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
 }
 
-.nft-shop.section .nft-list .item .bid {
-  padding: 14px 0 4px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+.sidebar .side-profile button:hover {
+    background: #333;
 }
 
-.nft-shop.section .nft-list .item .bid p,
-.nft-shop.section .nft-list .item .bid a {
-  background-color: #edecec;
-  padding: 6px 10px;
-  font-size: 13px;
-  border-radius: 10px;
+.container {
+    flex: 8;
+    padding: 20px 40px 20px 24px;
+    overflow-y: auto;
 }
 
-.nft-shop.section .nft-list .item .bid a {
-  color: #FC6D26;
-  background: transparent;
-  transition: all 0.3s ease;
+.container.animate-entry {
+    animation: expandIn 0.6s ease-out forwards;
 }
 
-.nft-shop.section .nft-list .item .bid a:hover {
-  color: #fff;
-  background-color: #000;
+@keyframes expandIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.8) rotateX(10deg);
+        filter: blur(5px);
+    }
+    50% {
+        transform: scale(1.02) rotateX(-5deg);
+        filter: blur(2px);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) rotateX(0deg);
+        filter: blur(0);
+    }
 }
 
-@keyframes slide-up {
-  from { transform: translateY(20px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
+.container .nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    background: #fff;
+    padding: 10px 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
 
-@media screen and (max-width: 1400px) {
-  .navbar, h2.separator, .nft-shop.section {
-    padding: 0 40px;
-  }
-  .nft-shop.section .nft-list .item img {
-    width: 220px;
-    height: 220px;
-  }
+.container .nav .search,
+.container .nav .city {
+    display: flex;
+    align-items: center;
+    background: #f2f2f2;
+    border-radius: 10px;
+    width: 40%;
+    position: relative;
+}
+
+.container .nav .search input,
+.container .nav .city input {
+    width: 100%;
+    padding: 10px 10px 10px 34px;
+    border: none;
+    background: transparent;
+    font-size: 14px;
+}
+
+.container .nav .search i,
+.container .nav .city i {
+    position: absolute;
+    font-size: 18px;
+    padding: 8px;
+    color: #666869;
+}
+
+.container .nav>button {
+    background: #111;
+    color: #fafafa;
+    border: none;
+    padding: 8px 20px;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.container .nav>button:hover {
+    background: #333;
+}
+
+.container .nav>button#menuToggle {
+    display: none;
+    padding: 6px;
+    font-size: 22px;
+    background: transparent;
+    color: #111;
+}
+
+.container .nav .trending .trending-btn {
+    padding: 8px;
+    background: #111;
+    color: #fafafa;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.container .nav .trending .trending-btn:hover {
+    background: #333;
+    transform: translateY(-1px);
+}
+
+.container .nav .user-info {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.container .nav .user-info:hover {
+    background: #f2f2f2;
+}
+
+.container .nav .user-info img {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.container .nav .user-info a {
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+}
+
+.container .nav .user-info a i {
+    font-size: 20px;
+}
+
+.container .nav .user-info p {
+    font-size: 13px;
+}
+
+.container .nav .user-info .user-menu {
+    display: none;
+    position: absolute;
+    top: 60px;
+    right: 0;
+    background: #fff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    padding: 10px;
+    z-index: 100;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.container .nav .user-info .user-menu.visible {
+    display: block;
+    opacity: 1;
+    visibility: visible;
+}
+
+.container .nav .user-info .user-menu a {
+    display: block;
+    padding: 8px 12px;
+    color: #333;
+    font-size: 14px;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.container .nav .user-info .user-menu a:hover {
+    background: #e0e0e0;
+}
+
+.container .main {
+    display: flex;
+    margin-top: 20px;
+    gap: 20px;
+}
+
+.container .main .content {
+    flex: 9;
+}
+
+.container .main .content .header h4 span {
+    font-size: 13px;
+    color: #a4a8ac;
+    font-weight: 500;
+}
+
+.container .main .content .header p {
+    margin-top: 8px;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.container .main .content .job-cards {
+    margin-top: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.container .main .content .job-cards .card {
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    border: 2px solid #f2f2f2;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    background: #fff;
+}
+
+.container .main .content .job-cards .card.animate-card {
+    animation: popIn 0.5s ease-out forwards;
+    animation-delay: var(--delay);
+}
+
+@keyframes popIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.5) rotate(5deg);
+        filter: brightness(0.8);
+    }
+    70% {
+        transform: scale(1.05) rotate(-2deg);
+        filter: brightness(1.1);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) rotate(0deg);
+        filter: brightness(1);
+    }
+}
+
+.container .main .content .job-cards .card:hover {
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    transform: translateY(-2px);
+}
+
+.container .main .content .job-cards .card .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.container .main .content .job-cards .card .card-header>i {
+    font-size: 24px;
+    color: #a4a8ac;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.container .main .content .job-cards .card .card-header>i:hover {
+    color: #111;
+}
+
+.container .main .content .job-cards .card .card-header .job-info {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.container .main .content .job-cards .card .card-header .job-info .profile-img {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.container .main .content .job-cards .card .card-header .job-info h5 {
+    font-weight: 500;
+}
+
+.container .main .content .job-cards .card .card-header .job-info h5 span {
+    font-size: 12px;
+    color: #a4a8ac;
+}
+
+.container .main .content .job-cards .card .card-header .job-info a {
+    font-weight: bold;
+    font-size: 14px;
+    margin-top: 4px;
+}
+
+.container .main .content .job-cards .card .card-header .job-info p {
+    font-size: 12px;
+}
+
+.container .main .content .job-cards .card .card-tags {
+    margin: 12px 0;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.container .main .content .job-cards .card .card-tags a {
+    font-size: 12px;
+    background: #f2f2f2;
+    padding: 5px 8px;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.container .main .content .job-cards .card .card-tags a:hover {
+    background: #e0e0e0;
+}
+
+.container .main .content .job-cards .card .card-desc {
+    font-size: 13px;
+    color: #a4a8ac;
+    line-height: 18px;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    overflow: hidden;
+    height: calc(18px * 3);
+}
+
+.container .main .content .job-cards .card .mini-profile {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: #fafafa;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    padding: 15px;
+    z-index: 10;
+    transform: translateY(-10px);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.container .main .content .job-cards .card:hover .mini-profile {
+    transform: translateY(0);
+    opacity: 1;
+    visibility: visible;
+}
+
+.container .main .content .job-cards .card .mini-profile .mini-profile-header {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.container .main .content .job-cards .card .mini-profile .mini-profile-header img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.container .main .content .job-cards .card .mini-profile .mini-profile-header h5 {
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.container .main .content .job-cards .card .mini-profile .mini-profile-header p {
+    font-size: 12px;
+    color: #666869;
+}
+
+.container .main .content .job-cards .card .mini-profile .mini-profile-skills h5 {
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+
+.container .main .content .job-cards .card .mini-profile .mini-profile-skills .skill-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.container .main .content .job-cards .card .mini-profile .mini-profile-skills .skill-tags .item {
+    padding: 6px;
+    border-radius: 4px;
+    background: #e7e7e7;
+    font-size: 10px;
+    font-weight: 500;
+    color: #666869;
+}
+
+.container .main .content .job-cards .card .mini-profile button {
+    width: 100%;
+    padding: 8px;
+    background: #111;
+    color: #fafafa;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: all 0.3s ease;
+}
+
+.container .main .content .job-cards .card .mini-profile button:hover {
+    background: #333;
+}
+
+.container .main .filters {
+    flex: 2;
+    padding-left: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.container .main .filters .header {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.container .main .filters .header.animate-filter-header {
+    animation: slideInRight 0.5s ease-out forwards;
+    animation-delay: var(--delay);
+}
+
+.container .main .filters .item.animate-filter-item {
+    animation: fadeInUp 0.4s ease-out forwards;
+    animation-delay: var(--delay);
+}
+
+@keyframes slideInRight {
+    0% {
+        opacity: 0;
+        transform: translateX(50px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes fadeInUp {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.container .main .filters .header a,
+.container .main .filters .item .title a {
+    color: #ca3844;
+    font-size: 13px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.container .main .filters .item .title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.container .main .filters .item .checkbox {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.container .main .filters .item .checkbox div {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.container .main .filters .item .checkbox input[type="checkbox"] {
+    width: 14px;
+    height: 14px;
+    accent-color: #111;
+    cursor: pointer;
+}
+
+.container .main .filters .item .checkbox label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #666869;
+}
+
+.container .main .filters .item .checkbox p {
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.container .main .filters .item .location {
+    background: #f2f2f2;
+    margin: 12px 0;
+    padding: 10px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    border-radius: 8px;
+}
+
+.container .main .filters .item .location input {
+    width: 100%;
+    padding-left: 24px;
+    background: transparent;
+    border: none;
+}
+
+.container .main .filters .item .location i {
+    position: absolute;
+    font-size: 18px;
+    color: #a4a8ac;
+}
+
+.container .main .filters .item .autocomplete {
+    position: relative;
+    margin: 12px 0;
+}
+
+.container .main .filters .item .autocomplete input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background: #f2f2f2;
+    font-size: 14px;
+    color: #666869;
+}
+
+.container .main .filters .item .autocomplete input:focus {
+    outline: none;
+    border-color: #111;
+}
+
+.container .main .filters .item .autocomplete .dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background: #fff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    z-index: 10;
+    max-height: 150px;
+    overflow-y: auto;
+}
+
+.container .main .filters .item .autocomplete .dropdown div {
+    padding: 10px;
+    font-size: 14px;
+    color: #666869;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.container .main .filters .item .autocomplete .dropdown div:hover {
+    background: #f2f2f2;
+}
+
+@media screen and (max-width: 1430px) {
+    .sidebar .side-profile .skills h5,
+    .sidebar .side-profile .skills .skill-tags {
+        display: none;
+    }
+
+    .sidebar .side-profile button {
+        margin-top: 0;
+    }
 }
 
 @media screen and (max-width: 1200px) {
-  h2.separator {
-    font-size: 34px;
-  }
-  .nft-shop.section .nft-list {
-    flex-wrap: wrap;
-    row-gap: 30px;
-  }
-  .nft-shop.section .nft-list .item {
-    width: 48%;
-  }
-  .nft-shop.section .nft-list .item img {
-    width: 100%;
-    height: auto;
-  }
+    .container {
+        padding: 20px;
+    }
+
+    .sidebar {
+        position: fixed;
+        z-index: 100;
+        height: 100%;
+        left: -220px;
+        width: 220px;
+    }
+
+    .sidebar.active {
+        left: 0;
+    }
+
+    .container .nav>button#menuToggle {
+        display: flex;
+    }
 }
 
 @media screen and (max-width: 992px) {
-  .navbar .logo {
-    font-size: 28px;
-  }
-  .navbar .links {
-    display: none;
-  }
-  .navbar .menu-toggle {
-    display: block;
-  }
-  .navbar.active .links {
-    display: flex;
-    flex-direction: column;
-    position: absolute;
-    top: 80px;
-    left: 0;
-    right: 0;
-    background: #fff;
-    padding: 20px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    animation: slide-down 0.3s ease-out;
-  }
-  .navbar.active .links .nav-link {
-    margin: 10px 0;
-    font-size: 18px;
-  }
+    .container .main {
+        flex-direction: column-reverse;
+    }
+
+    .container .nav .city {
+        display: none;
+    }
+
+    .container .nav .search {
+        width: 60%;
+    }
+
+    .container .main .filters {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        padding-left: 0;
+        gap: 25px;
+    }
+
+    .container .main .filters .header {
+        width: 100%;
+    }
+
+    .container .main .filters .item {
+        width: 45%;
+    }
 }
 
 @media screen and (max-width: 768px) {
-  .navbar, h2.separator, .nft-shop.section {
-    padding: 0 20px;
-  }
-  .navbar .logo {
-    display: none;
-  }
-  .navbar .links a {
-    font-size: 14px;
-  }
-  .navbar .login button {
-    font-size: 12px;
-    padding: 6px 10px;
-  }
-  h2.separator {
-    font-size: 30px;
-  }
-}
+    .container .nav {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
 
-@media screen and (max-width: 576px) {
-  .nft-shop.section .nft-list .item {
-    width: 47%;
-  }
-}
+    .container .nav .search {
+        width: 100%;
+        order: 1;
+    }
 
-@keyframes slide-down {
-  from { transform: translateY(-20px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
+    .container .nav>button {
+        order: 2;
+        padding: 8px 15px;
+    }
+
+    .container .nav .trending {
+        order: 3;
+    }
+
+    .container .nav .user-info {
+        order: 4;
+    }
+
+    .container .main .content .job-cards {
+        grid-template-columns: 1fr;
+    }
+
+    .container .main .filters .item {
+        width: 100%;
+    }
 }

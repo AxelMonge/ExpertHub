@@ -1,51 +1,267 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-  <title>Main Page - ExpertHub</title>
-</head>
-<body>
-  <nav class="navbar">
-    <a href="#" class="logo" [routerLink]="['/']">ExpertHub</a>
-    <div class="menu-toggle" (click)="toggleMenu()">☰</div>
-    <div class="links">
-      <a href="#" [routerLink]="['/']" class="nav-link">Inicio</a>
-      <a href="#" (click)="scrollTo('professionals')" class="nav-link">Profesionales</a>
-    </div>
-    <div class="login">
-      <button class="signup" (click)="logout()">Cerrar Sesión</button>
-    </div>
-  </nav>
+<div class="sidebar animate-sidebar">
+  <a href="#" [routerLink]="['/']" class="logo">ExpertHub</a>
 
-  <h2 class="separator" id="professionals">Lista de Profesionales</h2>
-
-  <div class="nft-shop section">
-    <div class="nft-list">
-      @for (prof of professionals; track prof.id) {
-        <div class="item">
-          <img src="/assets/profile-placeholder-1.jpg" alt="{{prof.name}}">
-          <div class="info">
-            <div>
-              <h5>{{prof.name}}</h5>
-              <p class="title">{{prof.specialty}}</p>
-              <div class="exp">
-                <i class='bx bx-time-five'></i>
-                <p>{{prof.experience}} años exp.</p>
-              </div>
-            </div>
-            <p>Disponible</p>
-          </div>
-          <div class="bid">
-            <p>Activo</p>
-            <a [routerLink]="['/profile', prof.id]" class="contact-button">Ver Detalles</a>
-          </div>
-        </div>
-      } @empty {
-        <p>No hay profesionales disponibles.</p>
-      }
-    </div>
+  <div class="side-nav">
+      <div class="item active animate-item" style="--delay: 0.1s;">
+          <i class='bx bx-search-alt'></i>
+          <a href="#" [routerLink]="['/main-page']">Profesionales</a>
+      </div>
+      <div class="item animate-item" style="--delay: 0.2s;">
+          <i class='bx bx-bot'></i>
+          <a [routerLink]="['/ai-assistant']">Asistente IA</a>
+      </div>
+      <div class="item animate-item" style="--delay: 0.3s;">
+          <i class='bx bx-briefcase'></i>
+          <a href="#" [routerLink]="['/requests']">Mis Solicitudes</a>
+      </div>
+      <div class="item animate-item" style="--delay: 0.4s;">
+          <i class='bx bx-store'></i>
+          <a href="#" [routerLink]="['/marketplace']">Mercado</a>
+      </div>
+      <div class="item animate-item" style="--delay: 0.5s;">
+          <i class='bx bx-cog'></i>
+          <a href="#" [routerLink]="['/settings']">Configuración</a>
+      </div>
   </div>
-</body>
-</html>
+
+  <div class="side-profile animate-profile" style="--delay: 0.6s;">
+      <div class="info">
+          <img src="assets/profile-1.png" alt="Perfil">
+          <a href="#" [routerLink]="['/profile', currentUserId]">Juan.Pérez</a>
+          <p>Electricista</p>
+      </div>
+      <div class="skills">
+          <h5>Habilidades</h5>
+          <div class="skill-tags">
+              <div class="item"><p>Cableado</p></div>
+              <div class="item"><p>Instalación</p></div>
+              <div class="item"><p>Reparación</p></div>
+              <div class="item"><p>Diagnóstico</p></div>
+          </div>
+      </div>
+      <button [routerLink]="['/profile', currentUserId]">Ver Perfil</button>
+  </div>
+</div>
+
+<div class="container animate-entry">
+  <div class="nav">
+      <button id="menuToggle" (click)="toggleSidebar()"><i class='bx bx-menu'></i></button>
+      <div class="search">
+          <i class='bx bx-search'></i>
+          <input type="text" placeholder="Buscar profesionales o servicios" [(ngModel)]="searchQuery" (input)="applyFilters()">
+      </div>
+      <div class="city">
+          <i class='bx bxs-location-plus'></i>
+          <input type="text" placeholder="Ciudad o región" [(ngModel)]="filters.location.city" (input)="applyFilters()">
+      </div>
+      <button (click)="applyFilters()">Buscar</button>
+      <div class="trending">
+          <button class="trending-btn">Trending</button>
+      </div>
+      <div class="user-info" (mouseenter)="showUserMenu()" (mouseleave)="hideUserMenu()">
+          <img src="assets/profile-1.png" alt="Usuario">
+          <div>
+              <a href="#">Cliente.X <i class='bx bx-chevron-down'></i></a>
+              <p>clientetest.com</p>
+          </div>
+          <div class="user-menu" [ngClass]="{'visible': isUserMenuVisible}">
+              <a (click)="logout()">Cerrar Sesión</a>
+          </div>
+      </div>
+  </div>
+
+  <div class="main">
+      <div class="content">
+          <div class="header">
+              <h4>Profesionales que coinciden con tus necesidades <span>{{ filteredProfessionals.length }}</span></h4>
+              <p>Explora expertos según tus preferencias</p>
+          </div>
+
+          <div class="job-cards">
+              @for (prof of filteredProfessionals; track prof.profileId) {
+                  <div class="card animate-card" style="--delay: {{ $index * 0.05 + 0.2 }}s;" (mouseenter)="startHoverTimer(prof.profileId)" (mouseleave)="clearHoverTimer()">
+                      <div class="card-header">
+                          <div class="job-info">
+                              <img src="{{ prof.profilePicture }}" alt="{{ prof.fullName }}" class="profile-img">
+                              <div>
+                                  <h5>{{ prof.fullName }} <span>| {{ prof.rating }} ★</span></h5>
+                                  <a href="#" [routerLink]="['/profile', prof.profileId]">{{ prof.profession }}</a>
+                                  <p>{{ prof.location.city }}, Costa Rica</p>
+                              </div>
+                          </div>
+                          <i class='bx bx-user' [routerLink]="['/profile', prof.profileId]"></i>
+                      </div>
+                      <div class="card-tags">
+                          <a href="#">{{ prof.availability ? 'Disponible' : 'No disponible' }}</a>
+                          <a href="#">{{ prof.membership ? 'Premium' : 'Estándar' }}</a>
+                          <a href="#">{{ prof.experienceYears }} años exp.</a>
+                      </div>
+                      <div class="card-desc">
+                          Especialista en {{ prof.profession.toLowerCase() }} con {{ prof.experienceYears }} años de experiencia. {{ prof.availability ? 'Disponible para trabajar de inmediato.' : 'No disponible actualmente.' }}
+                      </div>
+                      <div class="mini-profile" *ngIf="hoveredProfileId === prof.profileId">
+                          <div class="mini-profile-header">
+                              <img src="{{ prof.profilePicture }}" alt="{{ prof.fullName }}">
+                              <div>
+                                  <h5>{{ prof.fullName }}</h5>
+                                  <p>{{ prof.profession }} | {{ prof.rating }} ★</p>
+                              </div>
+                          </div>
+                          <div class="mini-profile-skills">
+                              <h5>Habilidades</h5>
+                              <div class="skill-tags">
+                                  <div class="item"><p>{{ getSkills(prof.profession)[0] }}</p></div>
+                                  <div class="item"><p>{{ getSkills(prof.profession)[1] }}</p></div>
+                                  <div class="item"><p>{{ getSkills(prof.profession)[2] }}</p></div>
+                                  <div class="item"><p>{{ getSkills(prof.profession)[3] }}</p></div>
+                              </div>
+                          </div>
+                          <button [routerLink]="['/profile', prof.profileId]">Ver Perfil Completo</button>
+                      </div>
+                  </div>
+              } @empty {
+                  <p>No se encontraron profesionales con los criterios seleccionados.</p>
+              }
+          </div>
+      </div>
+
+      <div class="filters">
+          <div class="header animate-filter-header" style="--delay: 0.3s;">
+              <h3>Filtros</h3>
+              <a (click)="clearFilters()">Borrar todo</a>
+          </div>
+          <div class="item animate-filter-item" style="--delay: 0.4s;">
+              <div class="title">
+                  <h4>Disponibilidad</h4>
+                  <a (click)="clearFilter('availability')">Borrar</a>
+              </div>
+              <div class="checkbox">
+                  <div>
+                      <input type="checkbox" id="available" [(ngModel)]="filters.availability.available" (change)="applyFilters()">
+                      <label for="available">Solo disponibles</label>
+                  </div>
+                  <p>{{ getCount('available') }}</p>
+              </div>
+          </div>
+          <div class="item animate-filter-item" style="--delay: 0.5s;">
+              <div class="title">
+                  <h4>Experiencia</h4>
+                  <a (click)="clearFilter('experience')">Borrar</a>
+              </div>
+              <div class="checkbox">
+                  <div>
+                      <input type="checkbox" id="entry" [(ngModel)]="filters.experience.entry" (change)="applyFilters()">
+                      <label for="entry">0-2 años</label>
+                  </div>
+                  <p>{{ getCount('entry') }}</p>
+              </div>
+              <div class="checkbox">
+                  <div>
+                      <input type="checkbox" id="junior" [(ngModel)]="filters.experience.junior" (change)="applyFilters()">
+                      <label for="junior">3-5 años</label>
+                  </div>
+                  <p>{{ getCount('junior') }}</p>
+              </div>
+              <div class="checkbox">
+                  <div>
+                      <input type="checkbox" id="middle" [(ngModel)]="filters.experience.middle" (change)="applyFilters()">
+                      <label for="middle">6-10 años</label>
+                  </div>
+                  <p>{{ getCount('middle') }}</p>
+              </div>
+              <div class="checkbox">
+                  <div>
+                      <input type="checkbox" id="senior" [(ngModel)]="filters.experience.senior" (change)="applyFilters()">
+                      <label for="senior">10+ años</label>
+                  </div>
+                  <p>{{ getCount('senior') }}</p>
+              </div>
+          </div>
+          <div class="item animate-filter-item" style="--delay: 0.6s;">
+              <div class="title">
+                  <h4>Categoría</h4>
+                  <a (click)="clearFilter('category')">Borrar</a>
+              </div>
+              <div class="autocomplete">
+                  <input type="text" placeholder="Buscar categoría" [(ngModel)]="filters.category.search" (input)="filterCategories()" (focus)="showCategoryDropdown = true" (blur)="hideCategoryDropdown()">
+                  <div class="dropdown" *ngIf="showCategoryDropdown && filteredCategories.length > 0">
+                      <div *ngFor="let category of filteredCategories" (click)="selectCategory(category.value)">
+                          {{ category.label }}
+                      </div>
+                  </div>
+              </div>
+          </div>
+          <div class="item animate-filter-item" style="--delay: 0.7s;">
+              <div class="title">
+                  <h4>Ubicación</h4>
+                  <a (click)="clearFilter('location')">Borrar</a>
+              </div>
+              <div class="location">
+                  <i class='bx bxs-location-plus'></i>
+                  <input type="text" placeholder="Buscar ubicación" [(ngModel)]="filters.location.city" (input)="applyFilters()">
+              </div>
+              <div class="checkbox">
+                  <div>
+                      <input type="checkbox" id="nearby" [(ngModel)]="filters.location.nearby" (change)="applyFilters()">
+                      <label for="nearby">Cerca de mí</label>
+                  </div>
+                  <p>{{ getCount('nearby') }}</p>
+              </div>
+          </div>
+          <div class="item animate-filter-item" style="--delay: 0.8s;">
+              <div class="title">
+                  <h4>Calificación</h4>
+                  <a (click)="clearFilter('rating')">Borrar</a>
+              </div>
+              <div class="checkbox">
+                  <div>
+                      <input type="checkbox" id="excellent" [(ngModel)]="filters.rating.excellent" (change)="applyFilters()">
+                      <label for="excellent">4.5+ estrellas</label>
+                  </div>
+                  <p>{{ getCount('excellent') }}</p>
+              </div>
+              <div class="checkbox">
+                  <div>
+                      <input type="checkbox" id="high" [(ngModel)]="filters.rating.high" (change)="applyFilters()">
+                      <label for="high">4-4.5 estrellas</label>
+                  </div>
+                  <p>{{ getCount('high') }}</p>
+              </div>
+              <div class="checkbox">
+                  <div>
+                      <input type="checkbox" id="mid" [(ngModel)]="filters.rating.mid" (change)="applyFilters()">
+                      <label for="mid">3-4 estrellas</label>
+                  </div>
+                  <p>{{ getCount('mid') }}</p>
+              </div>
+              <div class="checkbox">
+                  <div>
+                      <input type="checkbox" id="low" [(ngModel)]="filters.rating.low" (change)="applyFilters()">
+                      <label for="low">Menos de 3 estrellas</label>
+                  </div>
+                  <p>{{ getCount('low') }}</p>
+              </div>
+          </div>
+          <div class="item animate-filter-item" style="--delay: 0.9s;">
+              <div class="title">
+                  <h4>Membresía</h4>
+                  <a (click)="clearFilter('membership')">Borrar</a>
+              </div>
+              <div class="checkbox">
+                  <div>
+                      <input type="checkbox" id="premium" [(ngModel)]="filters.membership.premium" (change)="applyFilters()">
+                      <label for="premium">Premium</label>
+                  </div>
+                  <p>{{ getCount('premium') }}</p>
+              </div>
+              <div class="checkbox">
+                  <div>
+                      <input type="checkbox" id="standard" [(ngModel)]="filters.membership.standard" (change)="applyFilters()">
+                      <label for="standard">Estándar</label>
+                  </div>
+                  <p>{{ getCount('standard') }}</p>
+              </div>
+          </div>
+      </div>
+  </div>
+</div>

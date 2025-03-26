@@ -1,0 +1,57 @@
+<nav class="navbar">
+  <h3 class="navbar__logo">RatonAI 🐀🔥</h3>
+  <button class="navbar__button" (click)="toggleTheme()">
+    <i class='bx' [ngClass]="isLightMode ? 'bx-moon' : 'bx-sun'"></i>
+  </button>
+</nav>
+
+<header class="header" [ngClass]="{'hide-header': messages.length > 0}">
+  <div class="header__title">
+    <h1>¡Hola!</h1>
+    <h2>Soy RatonAI 🐀🔥, ¿cómo puedo ayudarte?</h2>
+    <p class="header__meaning">RatonAI significa: <strong>Recomendaciones Asistente para Talentos con Optimización y Navegación</strong></p>
+  </div>
+  <div class="suggests">
+    <div class="suggests__item" (click)="prompt = 'Encuentra al mejor electricista'; sendPrompt()">
+      <p class="suggests__item-text">Encuentra al mejor electricista</p>
+      <div class="suggests__item-icon"><i class='bx bx-bulb'></i></div>
+    </div>
+    <div class="suggests__item" (click)="prompt = 'Escribe un mensaje para contratar a un profesional'; sendPrompt()">
+      <p class="suggests__item-text">Escribe un mensaje de contratación</p>
+      <div class="suggests__item-icon"><i class='bx bx-edit-alt'></i></div>
+    </div>
+    <div class="suggests__item" (click)="prompt = 'Dame consejos para negociar con un profesional'; sendPrompt()">
+      <p class="suggests__item-text">Consejos para negociar</p>
+      <div class="suggests__item-icon"><i class='bx bx-chat'></i></div>
+    </div>
+    <div class="suggests__item" (click)="prompt = 'Muéstrame cómo evaluar un portafolio'; sendPrompt()">
+      <p class="suggests__item-text">Evaluar un portafolio</p>
+      <div class="suggests__item-icon"><i class='bx bx-briefcase'></i></div>
+    </div>
+  </div>
+</header>
+
+<section class="chats">
+  <div class="message" [ngClass]="{'message--outgoing': msg.isUser, 'message--incoming': !msg.isUser, 'message--loading': msg.isLoading, 'message--error': msg.isError}" *ngFor="let msg of messages">
+    <div class="message__content">
+      <img class="message__avatar" [src]="msg.isUser ? 'assets/user-avatar.png' : 'assets/ratonai-avatar.png'" alt="Avatar">
+      <div class="message__text" [innerHTML]="msg.text"></div>
+      <div class="message__loading-indicator" *ngIf="msg.isLoading">
+        <div class="message__loading-bar"></div>
+        <div class="message__loading-bar"></div>
+        <div class="message__loading-bar"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="prompt">
+  <form class="prompt__form" (ngSubmit)="sendPrompt()" novalidate>
+    <div class="prompt__input-wrapper">
+      <input type="text" placeholder="Pregúntale a RatonAI 🐀🔥" class="prompt__form-input" [(ngModel)]="prompt" name="prompt" required>
+      <button type="submit" class="prompt__form-button" id="sendButton"><i class='bx bx-send'></i></button>
+      <button type="button" class="prompt__form-button" id="deleteButton" (click)="clearChat()"><i class='bx bx-trash'></i></button>
+    </div>
+  </form>
+  <p class="prompt__disclaim">RatonAI 🐀🔥 puede mostrar información imprecisa, verifica las respuestas.</p>
+</section>

@@ -1,15 +1,117 @@
-<mat-toolbar color="primary">
-  <span>Perfil</span>
-</mat-toolbar>
-<mat-card>
-  <mat-card-title>Perfil del Profesional</mat-card-title>
-  <mat-card-content>
-    @if (professional) {
-      <p><strong>Nombre:</strong> {{ professional.name }}</p>
-      <p><strong>Especialidad:</strong> {{ professional.specialty }}</p>
-      <p><strong>Experiencia:</strong> {{ professional.experience }} años</p>
-    } @else {
-      <p>Profesional no encontrado.</p>
-    }
-  </mat-card-content>
-</mat-card>
+<div class="sidebar animate-sidebar">
+  <a href="#" [routerLink]="['/']" class="logo">ExpertHub</a>
+  <div class="side-nav">
+    <div class="item animate-item" style="--delay: 0.1s;">
+      <i class='bx bx-search-alt'></i>
+      <a href="#" [routerLink]="['/main-page']">Profesionales</a>
+    </div>
+    <div class="item animate-item" style="--delay: 0.2s;">
+      <i class='bx bx-bot'></i>
+      <a href="#" [routerLink]="['/ai-assistant']">Asistente IA</a>
+    </div>
+    <div class="item animate-item" style="--delay: 0.3s;">
+      <i class='bx bx-briefcase'></i>
+      <a href="#" [routerLink]="['/requests']">Mis Solicitudes</a>
+    </div>
+    <div class="item animate-item" style="--delay: 0.4s;">
+      <i class='bx bx-store'></i>
+      <a href="#" [routerLink]="['/marketplace']">Mercado</a>
+    </div>
+    <div class="item animate-item" style="--delay: 0.5s;">
+      <i class='bx bx-cog'></i>
+      <a href="#" [routerLink]="['/settings']">Configuración</a>
+    </div>
+  </div>
+  <div class="side-profile animate-profile" style="--delay: 0.6s;">
+    <div class="info">
+      <img src="assets/profile-1.png" alt="Perfil">
+      <a href="#" [routerLink]="['/profile', currentUserId]">Juan.Pérez</a>
+      <p>Electricista</p>
+    </div>
+    <div class="skills">
+      <h5>Habilidades</h5>
+      <div class="skill-tags">
+        <div class="item"><p>Cableado</p></div>
+        <div class="item"><p>Instalación</p></div>
+        <div class="item"><p>Reparación</p></div>
+        <div class="item"><p>Diagnóstico</p></div>
+      </div>
+    </div>
+    <button [routerLink]="['/profile', currentUserId]">Ver Perfil</button>
+  </div>
+</div>
+
+<div class="container animate-entry">
+  <div class="profile-header">
+    <img src="{{ profile.profilePicture }}" alt="{{ profile.fullName }}">
+    <div class="info">
+      <h1>{{ profile.fullName }} <span class="rating">★ {{ profile.rating }} ({{ profile.totalReviews }} reseñas)</span></h1>
+      <p>{{ profile.profession }} | {{ profile.location.city }}, {{ profile.location.country }}</p>
+      <p>{{ profile.experienceYears }} años de experiencia</p>
+      <p class="status" [ngClass]="{'unavailable': !profile.availability}">{{ profile.availability ? 'Disponible ahora' : 'No disponible' }}</p>
+    </div>
+    <div class="actions">
+      <button class="contact-btn" (click)="contactProfessional()">Contactar</button>
+      <button class="share-btn"><i class='bx bx-share-alt'></i> Compartir</button>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button [ngClass]="{'active': activeTab === 'overview'}" (click)="setActiveTab('overview')">Resumen</button>
+    <button [ngClass]="{'active': activeTab === 'skills'}" (click)="setActiveTab('skills')">Habilidades</button>
+    <button [ngClass]="{'active': activeTab === 'portfolio'}" (click)="setActiveTab('portfolio')">Portafolio</button>
+    <button [ngClass]="{'active': activeTab === 'courses'}" (click)="setActiveTab('courses')">Cursos</button>
+    <button [ngClass]="{'active': activeTab === 'reviews'}" (click)="setActiveTab('reviews')">Reseñas</button>
+  </div>
+
+  <div class="content">
+    <div class="overview" *ngIf="activeTab === 'overview'">
+      <div class="description">
+        <h4>Acerca de mí</h4>
+        <p>{{ profile.description }}</p>
+      </div>
+      <div class="details">
+        <h4>Detalles</h4>
+        <div class="item"><span>Teléfono</span><span>{{ profile.contact.phone }}</span></div>
+        <div class="item"><span>Email</span><span>{{ profile.contact.email }}</span></div>
+        <div class="item"><span>Vistas</span><span>{{ profile.views }}</span></div>
+        <div class="item websites"><span>Sitios web</span><span><a *ngFor="let url of profile.websites" (click)="visitWebsite(url)">{{ url }}</a></span></div>
+      </div>
+    </div>
+
+    <div class="skills" *ngIf="activeTab === 'skills'">
+      <div class="skill-card" *ngFor="let skill of profile.skills">
+        <h5>{{ skill.name }}</h5>
+        <p class="level">{{ skill.level }}</p>
+        <p>{{ skill.description }}</p>
+      </div>
+    </div>
+
+    <div class="portfolio" *ngIf="activeTab === 'portfolio'">
+      <div class="card" *ngFor="let project of profile.portfolio">
+        <h5>{{ project.title }}</h5>
+        <p>{{ project.description }}</p>
+        <img *ngFor="let img of project.images" src="{{ img }}" alt="{{ project.title }}">
+        <p>{{ project.date | date:'mediumDate' }}</p>
+      </div>
+    </div>
+
+    <div class="courses" *ngIf="activeTab === 'courses'">
+      <div class="card" *ngFor="let course of profile.courses">
+        <h5>{{ course.title }}</h5>
+        <p>{{ course.institution }}</p>
+        <p>{{ course.completionDate | date:'mediumDate' }}</p>
+        <a (click)="visitWebsite(course.certificateUrl)">Ver certificado</a>
+      </div>
+    </div>
+
+    <div class="reviews" *ngIf="activeTab === 'reviews'">
+      <div class="card" *ngFor="let review of profile.reviews">
+        <h5>{{ review.rating }} ★</h5>
+        <p>{{ review.comment }}</p>
+        <img *ngFor="let img of review.images" src="{{ img }}" alt="Review">
+        <p>{{ review.date | date:'mediumDate' }}</p>
+      </div>
+    </div>
+  </div>
+</div>
