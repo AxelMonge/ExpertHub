@@ -57,4 +57,9 @@ export class HomeComponent implements AfterViewInit {
     const navbar = document.querySelector('.navbar');
     if (navbar) navbar.classList.toggle('active', this.isMenuOpen);
   }
+  
+  navigateToLogin() {
+    this.closeModal('contact');
+    this.router.navigate(['/login']);
+  }
 }
