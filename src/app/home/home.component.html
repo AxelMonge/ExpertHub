@@ -9,7 +9,10 @@
 </head>
 <body>
     <nav class="navbar">
-        <a href="#" class="logo" (click)="scrollTo('inicio'); $event.preventDefault()">ExpertHub</a>
+        <a href="#" class="logo" (click)="scrollTo('inicio'); $event.preventDefault()">
+            <img src="/assets/experthub_logo.png" style="width: 140px; margin-top: 10px;" alt="ExpertHub Logo">
+            <!-- <img src="/assets/experthub_symbol.png" style="width: 40px; margin-top: 10px;" alt="ExpertHub Logo"> -->
+        </a>
         <div class="menu-toggle" (click)="toggleMenu()">☰</div>
         <div class="links">
             <a href="#" (click)="scrollTo('inicio'); $event.preventDefault()" class="nav-link">Inicio</a>
@@ -24,14 +27,15 @@
 
     <header id="inicio" class="section">
         <div class="left">
-            <h1>Bienvenido a <span>ExpertHub</span></h1>
+            <h1>Bienvenido a ExpertHub</h1>
             <p>Conecta con los mejores profesionales para resolver tus problemas de forma rápida y eficiente. ¡Explora nuestro ecosistema de expertos hoy!</p>
             <a href="#" class="join-button" (click)="showModal('contact'); $event.preventDefault()">
                 <i class='bx bx-user-plus'></i>
                 <span>Únete ahora</span>
             </a>
         </div>
-        <img src="/assets/header-placeholder.png" alt="ExpertHub Image">
+        <img src="/assets/experthub_logo.png" alt="ExpertHub Logo">
+        <!-- <img src="/assets/experthub_symbol.png" style="width: 160px; margin: 50px 200px 0px 0px;" alt="ExpertHub Image"> -->
     </header>
 
     <h2 class="separator">Conecta con Profesionales</h2>
