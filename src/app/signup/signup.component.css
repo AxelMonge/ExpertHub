@@ -1,0 +1,209 @@
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Ubuntu', sans-serif;
+}
+
+.signup-container {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f1f1f1;
+    padding: 20px;
+}
+
+.signup-card {
+    background: #fff;
+    padding: 40px;
+    border-radius: 18px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 500px; /* Slightly wider for professional form */
+    animation: slide-up 0.5s ease-out;
+}
+
+.signup-card h2 {
+    font-size: 32px;
+    color: #000000;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.signup-card p {
+    text-align: center;
+    color: #777;
+    margin-bottom: 20px;
+}
+
+.role-selection {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+}
+
+.role-button {
+    padding: 12px 20px;
+    border: none;
+    background-color: #dfdcdc;
+    color: #333;
+    border-radius: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.role-button:hover {
+    background-color: #000000;
+    color: #fff;
+    transform: scale(1.05);
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 16px;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #edecec;
+    border-radius: 10px;
+    font-size: 14px;
+    transition: border-color 0.3s ease;
+}
+
+.form-group textarea {
+    height: 100px;
+    resize: vertical;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #000000;
+}
+
+.profession-entry,
+.site-entry {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.remove-btn,
+.add-btn {
+    padding: 5px 10px;
+    border: none;
+    background-color: #000000;
+    color: #fff;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.add-btn {
+    background-color: #000000;
+}
+
+.remove-btn:hover {
+    background-color: #65b5fc;
+}
+
+.add-btn:hover {
+    background-color: #000000;
+}
+
+.checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.checkbox-group input {
+    width: auto;
+}
+
+.signup-button {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    background-color: #000000;
+    color: #fff;
+    border-radius: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s-alpine ease, transform 0.3s ease;
+}
+
+.signup-button:hover {
+    background-color: #000000;
+    transform: scale(1.05);
+}
+
+.login-link {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.login-link a {
+    color: #000000;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.login-link a:hover {
+    color: #000000;
+    text-decoration: underline;
+}
+
+.error-message {
+    color: #ff4444;
+    font-size: 14px;
+    text-align: center;
+    margin-top: 10px;
+}
+
+@keyframes slide-up {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+@media screen and (max-width: 576px) {
+    .signup-card {
+        padding: 20px;
+    }
+
+    .signup-card h2 {
+        font-size: 28px;
+    }
+
+    .form-group input,
+    .form-group textarea {
+        padding: 10px;
+    }
+
+    .signup-button,
+    .role-button {
+        padding: 10px;
+        font-size: 14px;
+    }
+
+    .profession-entry,
+    .site-entry {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
