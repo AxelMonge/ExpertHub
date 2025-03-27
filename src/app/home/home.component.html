@@ -15,13 +15,13 @@
         </a>
         <div class="menu-toggle" (click)="toggleMenu()">☰</div>
         <div class="links">
-            <a href="#" (click)="scrollTo('inicio'); $event.preventDefault()" class="nav-link">Inicio</a>
+            <a href="#" [routerLink]="['/main-page']" class="nav-link">Inicio</a>
             <a href="#" (click)="scrollTo('características'); $event.preventDefault()" class="nav-link">Características</a>
             <a href="#" (click)="scrollTo('acerca'); $event.preventDefault()" class="nav-link">Acerca de Nosotros</a>
         </div>
         <div class="login">
             <button class="signup">¿Es tu primera vez?</button>
-            <button [routerLink]="['/main-page']">Iniciar Sesión</button>
+            <button [routerLink]="['/login']">Iniciar Sesión</button>
         </div>
     </nav>
 
