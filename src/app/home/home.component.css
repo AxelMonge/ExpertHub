@@ -45,7 +45,7 @@ body {
 
 .navbar .logo {
     font-size: 33px;
-    color: #65b5fc;
+    color: #5360ff;
     font-weight: 600;
     transition: transform 0.3s ease;
 }
@@ -74,7 +74,7 @@ body {
 }
 
 .navbar .links .nav-link:hover {
-    color: #65b5fc;
+    color: #5360ff;
     transform: translateY(-2px);
 }
 
@@ -85,7 +85,7 @@ body {
     height: 2px;
     bottom: -5px;
     left: 0;
-    background-color: #65b5fc;
+    background-color: #5360ff;
     transition: width 0.3s ease;
 }
 
@@ -103,7 +103,7 @@ body {
 }
 
 .navbar .login button:hover {
-    color: #65b5fc;
+    color: #5360ff;
     transform: scale(1.1);
 }
 
@@ -116,7 +116,7 @@ body {
 }
 
 .navbar .login button.signup:hover {
-    background-color: #65b5fc;
+    background-color: #5360ff;
     transform: scale(1.1);
 }
 
@@ -140,7 +140,7 @@ header.section .left h1 {
 }
 
 header.section .left h1 span {
-    color: #65b5fc;
+    color: #5360ff;
 }
 
 header.section .left p {
@@ -160,7 +160,7 @@ header.section .left a {
 }
 
 header.section .left a:hover {
-    background-color: #65b5fc;
+    background-color: #5360ff;
     transform: scale(1.1);
 }
 
@@ -217,7 +217,7 @@ h2.separator {
 
 .sell-nft.section .item .header i {
     font-size: 40px;
-    color: #65b5fc;
+    color: #5360ff;
 }
 
 .sell-nft.section .item .header h5 {
@@ -252,7 +252,7 @@ h2.separator {
 
 .nft-shop.section .category a:hover {
     color: #fff;
-    background-color: #65b5fc;
+    background-color: #5360ff;
     transform: scale(1.05);
 }
 
@@ -301,12 +301,12 @@ h2.separator {
 
 .nft-shop.section .nft-list .item .exp i {
     font-size: 22px;
-    color: #65b5fc;
+    color: #5360ff;
 }
 
 .nft-shop.section .nft-list .item .exp p {
     font-size: 12px;
-    color: #65b5fc;
+    color: #5360ff;
 }
 
 .nft-shop.section .nft-list .item .info > p {
@@ -331,7 +331,7 @@ h2.separator {
 }
 
 .nft-shop.section .nft-list .item .bid a {
-    color: #65b5fc;
+    color: #5360ff;
     background: transparent;
     transition: all 0.3s ease;
 }
@@ -360,7 +360,7 @@ h2.separator {
 
 .view-more.section button:hover {
     color: #fff;
-    background: #65b5fc;
+    background: #5360ff;
     transform: scale(1.05);
 }
 
@@ -453,7 +453,7 @@ footer.section .right .social a i {
 }
 
 footer.section .right .social a i:hover {
-    color: #65b5fc;
+    color: #5360ff;
     transform: scale(1.1);
 }
 
@@ -490,7 +490,7 @@ footer.section .right p {
 
 .modal-content h3 {
     font-size: 20px;
-    color: #65b5fc;
+    color: #5360ff;
     margin-bottom: 10px;
 }
 
@@ -504,7 +504,7 @@ footer.section .right p {
     padding: 8px 14px;
     border: none;
     cursor: pointer;
-    background-color: #65b5fc;
+    background-color: #5360ff;
     color: #fff;
     border-radius: 4px;
     margin: 0 5px;
@@ -527,7 +527,7 @@ footer.section .right p {
 }
 
 .close:hover {
-    color: #65b5fc;
+    color: #5360ff;
     transform: scale(1.2);
 }
 
