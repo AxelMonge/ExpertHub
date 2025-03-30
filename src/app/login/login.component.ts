@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { FormsModule } from '@angular/forms'; 
+import { FormsModule } from '@angular/forms';
+import { FirestoreService, User } from '../services/firestore.service';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule], // Add FormsModule here
+  imports: [FormsModule],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
@@ -14,18 +15,25 @@ export class LoginComponent {
   password: string = '';
   errorMessage: string = '';
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private firestoreService: FirestoreService) {}
 
-  onSubmit() {
+  async onSubmit() {
     if (!this.email || !this.password) {
       this.errorMessage = 'Por favor, completa todos los campos';
       return;
     }
-    if (this.email === 'test@experthub.com' && this.password === 'password123') {
-      this.errorMessage = '';
-      this.router.navigate(['/main-page']);
-    } else {
-      this.errorMessage = 'Correo o contraseña incorrectos';
+
+    try {
+      const user: User | undefined = await this.firestoreService.login(this.email, this.password);
+      if (user) {
+        this.errorMessage = '';
+        this.router.navigate(['/main-page']);
+      } else {
+        this.errorMessage = 'Correo o contraseña incorrectos';
+      }
+    } catch (error) {
+      this.errorMessage = 'Error al iniciar sesión: ' + error;
+      console.error(error);
     }
   }
 

@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { FirestoreService, Client, Professional } from '../services/firestore.service';
+import { FirestoreService, Client, Professional, User } from '../services/firestore.service';
 
 @Component({
   selector: 'app-signup',
@@ -91,6 +91,15 @@ export class SignupComponent {
     const client: Client = { ...this.clientData, email: this.email };
     try {
       const clientId = await this.firestoreService.agregarCliente(client);
+      const user: User = {
+        email: this.email,
+        password: this.password,
+        userId: this.clientData.idNumber,
+        role: 'client',
+        createdAt: new Date(),
+        lastLogin: new Date()
+      };
+      await this.firestoreService.agregarUsuario(user);
       console.log('Cliente registrado con ID:', clientId);
       this.router.navigate(['/login']);
     } catch (error) {
@@ -111,6 +120,15 @@ export class SignupComponent {
     };
     try {
       const professionalId = await this.firestoreService.agregarProfesional(professional);
+      const user: User = {
+        email: this.email,
+        password: this.password,
+        userId: this.professionalData.idNumber,
+        role: 'professional',
+        createdAt: new Date(),
+        lastLogin: new Date()
+      };
+      await this.firestoreService.agregarUsuario(user);
       console.log('Profesional registrado con ID:', professionalId);
       this.router.navigate(['/login']);
     } catch (error) {

@@ -1,25 +1,34 @@
 import { Injectable, inject } from '@angular/core';
-import { Firestore, collection, collectionData, doc, getDoc, addDoc } from '@angular/fire/firestore';
+import { Firestore, collection, collectionData, doc, getDoc, addDoc, query, where, getDocs } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 
 export interface Professional {
-  idNumber: string;     
-  email: string;         
-  fullName: string;    
-  location: string;    
+  idNumber: string;
+  email: string;
+  fullName: string;
+  location: string;
   professions: string[];
-  experienceYears: number; 
-  description: string;   
-  sites: string[];       
-  phone: string;        
-  contactEmail: string;  
+  experienceYears: number;
+  description: string;
+  sites: string[];
+  phone: string;
+  contactEmail: string;
 }
 
 export interface Client {
-  idNumber: string; 
-  email: string;        
-  fullName: string;  
-  location: string; 
+  idNumber: string;
+  email: string;
+  fullName: string;
+  location: string;
+}
+
+export interface User {
+  email: string;
+  password: string;
+  userId: string;
+  role: string;
+  createdAt: Date;
+  lastLogin: Date;
 }
 
 @Injectable({
@@ -49,5 +58,18 @@ export class FirestoreService {
     const profesionalesRef = collection(this.firestore, 'profesionales');
     const docRef = await addDoc(profesionalesRef, profesional);
     return docRef.id;
+  }
+
+  async agregarUsuario(usuario: User): Promise<string> {
+    const usuariosRef = collection(this.firestore, 'usuarios');
+    const docRef = await addDoc(usuariosRef, usuario);
+    return docRef.id;
+  }
+
+  async login(email: string, password: string): Promise<User | undefined> {
+    const usuariosRef = collection(this.firestore, 'usuarios');
+    const q = query(usuariosRef, where('email', '==', email), where('password', '==', password));
+    const querySnapshot = await getDocs(q);
+    return querySnapshot.empty ? undefined : { id: querySnapshot.docs[0].id, ...querySnapshot.docs[0].data() } as unknown as User;
   }
 }
