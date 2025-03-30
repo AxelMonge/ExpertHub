@@ -15,7 +15,7 @@ export class MainPageComponent implements OnInit {
     {
       profileId: 'prof1',
       fullName: 'Juan Pérez',
-      profilePicture: 'assets/electrician.png',
+      profilePicture: 'assets/experthub_logo.png',
       profession: 'Electricista',
       location: { city: 'San José' },
       experienceYears: 10,
@@ -26,7 +26,7 @@ export class MainPageComponent implements OnInit {
     {
       profileId: 'prof2',
       fullName: 'María Gómez',
-      profilePicture: 'assets/plumber.png',
+      profilePicture: 'assets/experthub_logo.png',
       profession: 'Plomera',
       location: { city: 'Heredia' },
       experienceYears: 8,
@@ -37,7 +37,7 @@ export class MainPageComponent implements OnInit {
     {
       profileId: 'prof3',
       fullName: 'Carlos Ruiz',
-      profilePicture: 'assets/designer.png',
+      profilePicture: 'assets/experthub_logo.png',
       profession: 'Diseñador Gráfico',
       location: { city: 'Alajuela' },
       experienceYears: 5,
@@ -48,7 +48,7 @@ export class MainPageComponent implements OnInit {
     {
       profileId: 'prof4',
       fullName: 'Ana López',
-      profilePicture: 'assets/carpenter.png',
+      profilePicture: 'assets/experthub_logo.png',
       profession: 'Carpintera',
       location: { city: 'Cartago' },
       experienceYears: 8,

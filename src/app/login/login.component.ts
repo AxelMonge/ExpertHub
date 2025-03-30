@@ -1,12 +1,13 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 import { FirestoreService, User } from '../services/firestore.service';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, CommonModule],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
@@ -22,7 +23,6 @@ export class LoginComponent {
       this.errorMessage = 'Por favor, completa todos los campos';
       return;
     }
-
     try {
       const user: User | undefined = await this.firestoreService.login(this.email, this.password);
       if (user) {

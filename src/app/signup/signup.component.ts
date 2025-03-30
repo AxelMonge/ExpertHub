@@ -89,16 +89,16 @@ export class SignupComponent {
       return;
     }
     const client: Client = { ...this.clientData, email: this.email };
+    const user: User = {
+      email: this.email,
+      password: this.password,
+      userId: this.clientData.idNumber,
+      role: 'client',
+      createdAt: new Date(),
+      lastLogin: new Date()
+    };
     try {
       const clientId = await this.firestoreService.agregarCliente(client);
-      const user: User = {
-        email: this.email,
-        password: this.password,
-        userId: this.clientData.idNumber,
-        role: 'client',
-        createdAt: new Date(),
-        lastLogin: new Date()
-      };
       await this.firestoreService.agregarUsuario(user);
       console.log('Cliente registrado con ID:', clientId);
       this.router.navigate(['/login']);
@@ -118,16 +118,16 @@ export class SignupComponent {
       email: this.email,
       contactEmail: this.useSameEmail ? this.email : this.professionalData.contactEmail
     };
+    const user: User = {
+      email: this.email,
+      password: this.password,
+      userId: this.professionalData.idNumber,
+      role: 'professional',
+      createdAt: new Date(),
+      lastLogin: new Date()
+    };
     try {
       const professionalId = await this.firestoreService.agregarProfesional(professional);
-      const user: User = {
-        email: this.email,
-        password: this.password,
-        userId: this.professionalData.idNumber,
-        role: 'professional',
-        createdAt: new Date(),
-        lastLogin: new Date()
-      };
       await this.firestoreService.agregarUsuario(user);
       console.log('Profesional registrado con ID:', professionalId);
       this.router.navigate(['/login']);
