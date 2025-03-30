@@ -50,12 +50,18 @@ export class FirestoreService {
 
   async agregarCliente(cliente: Client): Promise<string> {
     const clientesRef = collection(this.firestore, 'clientes');
+    const q = query(clientesRef, where('idNumber', '==', cliente.idNumber));
+    const querySnapshot = await getDocs(q);
+    if (!querySnapshot.empty) throw new Error('Cédula ya registrada');
     const docRef = await addDoc(clientesRef, cliente);
     return docRef.id;
   }
 
   async agregarProfesional(profesional: Professional): Promise<string> {
     const profesionalesRef = collection(this.firestore, 'profesionales');
+    const q = query(profesionalesRef, where('idNumber', '==', profesional.idNumber));
+    const querySnapshot = await getDocs(q);
+    if (!querySnapshot.empty) throw new Error('Cédula ya registrada');
     const docRef = await addDoc(profesionalesRef, profesional);
     return docRef.id;
   }
