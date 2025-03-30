@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { FirestoreService, Client, Professional } from '../services/firestore.service';
 
 @Component({
   selector: 'app-signup',
@@ -37,7 +38,7 @@ export class SignupComponent {
     contactEmail: ''
   };
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private firestoreService: FirestoreService) {}
 
   selectRole(role: 'client' | 'professional') {
     this.role = role;
@@ -50,7 +51,6 @@ export class SignupComponent {
       this.errorMessage = 'Por favor, completa el correo y la contraseña';
       return;
     }
-    // Basic email validation (replace with real validation/service call)
     if (!this.email.includes('@') || !this.email.includes('.')) {
       this.errorMessage = 'Correo electrónico inválido';
       return;
@@ -80,35 +80,51 @@ export class SignupComponent {
   }
 
   toggleContactEmail() {
-    if (this.useSameEmail) {
-      this.professionalData.contactEmail = this.email;
-    } else {
-      this.professionalData.contactEmail = '';
-    }
+    this.professionalData.contactEmail = this.useSameEmail ? this.email : '';
   }
 
-  submitClientForm() {
+  async submitClientForm() {
     if (!this.clientData.fullName || !this.clientData.idNumber || !this.clientData.location) {
       this.errorMessage = 'Por favor, completa todos los campos obligatorios';
       return;
     }
-    // Mock signup logic (replace with API call)
-    console.log('Client Signup:', { email: this.email, password: this.password, ...this.clientData });
-    this.router.navigate(['/login']);
+    const client: Client = { ...this.clientData, email: this.email };
+    try {
+      const clientId = await this.firestoreService.agregarCliente(client);
+      console.log('Cliente registrado con ID:', clientId);
+      this.router.navigate(['/login']);
+    } catch (error) {
+      this.errorMessage = 'Error al registrar cliente: ' + error;
+      console.error(error);
+    }
   }
 
-  submitProfessionalForm() {
+  async submitProfessionalForm() {
     if (!this.professionalData.fullName || !this.professionalData.idNumber || !this.professionalData.location || !this.professionalData.professions[0]) {
       this.errorMessage = 'Por favor, completa todos los campos obligatorios (mínimo una profesión)';
       return;
     }
-    // Mock signup logic (replace with API call)
-    console.log('Professional Signup:', { email: this.email, password: this.password, ...this.professionalData });
-    this.router.navigate(['/login']);
+    const professional: Professional = { 
+      ...this.professionalData, 
+      email: this.email,
+      contactEmail: this.useSameEmail ? this.email : this.professionalData.contactEmail
+    };
+    try {
+      const professionalId = await this.firestoreService.agregarProfesional(professional);
+      console.log('Profesional registrado con ID:', professionalId);
+      this.router.navigate(['/login']);
+    } catch (error) {
+      this.errorMessage = 'Error al registrar profesional: ' + error;
+      console.error(error);
+    }
   }
 
   navigateToLogin(event: Event) {
     event.preventDefault();
     this.router.navigate(['/login']);
+  }
+
+  trackByIndex(index: number) {
+    return index;
   }
 }

@@ -1,6 +1,5 @@
 <div class="signup-container">
     <div class="signup-card">
-        <!-- Step 1: Choose Role -->
         <div *ngIf="!roleSelected">
             <h2>Registrarse en ExpertHub</h2>
             <p>¿Cómo deseas registrarte?</p>
@@ -10,7 +9,6 @@
             </div>
         </div>
 
-        <!-- Step 2: Email and Password -->
         <div *ngIf="roleSelected && !formSubmitted">
             <h2>Crear Cuenta</h2>
             <form (ngSubmit)="submitCredentials()">
@@ -42,7 +40,6 @@
             <p class="error-message" *ngIf="errorMessage">{{ errorMessage }}</p>
         </div>
 
-        <!-- Step 3: Client Form -->
         <div *ngIf="formSubmitted && role === 'client'">
             <h2>Datos de Cliente</h2>
             <form (ngSubmit)="submitClientForm()">
@@ -81,7 +78,6 @@
             <p class="error-message" *ngIf="errorMessage">{{ errorMessage }}</p>
         </div>
 
-        <!-- Step 3: Professional Form -->
         <div *ngIf="formSubmitted && role === 'professional'">
             <h2>Datos de Profesional</h2>
             <form (ngSubmit)="submitProfessionalForm()">
@@ -117,7 +113,7 @@
                 </div>
                 <div class="form-group">
                     <label>Profesiones * (mínimo 1)</label>
-                    <div *ngFor="let profession of professionalData.professions; let i = index" class="profession-entry">
+                    <div *ngFor="let profession of professionalData.professions; let i = index; trackBy: trackByIndex" class="profession-entry">
                         <input 
                             type="text" 
                             [(ngModel)]="professionalData.professions[i]" 
@@ -147,7 +143,7 @@
                 </div>
                 <div class="form-group">
                     <label>Sitios</label>
-                    <div *ngFor="let site of professionalData.sites; let i = index" class="site-entry">
+                    <div *ngFor="let site of professionalData.sites; let i = index; trackBy: trackByIndex" class="site-entry">
                         <input 
                             type="text" 
                             [(ngModel)]="professionalData.sites[i]" 
@@ -173,6 +169,7 @@
                         id="contactEmail" 
                         [(ngModel)]="professionalData.contactEmail" 
                         name="contactEmail" 
+                        [disabled]="useSameEmail"
                         placeholder="Ingresa tu email de contacto">
                     <div class="checkbox-group">
                         <input 
