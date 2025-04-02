@@ -1,7 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
-import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { Firestore, collection, collectionData } from '@angular/fire/firestore';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-main-page',
@@ -11,52 +13,21 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./main-page.component.css']
 })
 export class MainPageComponent implements OnInit {
-  professionals: Professional[] = [
-    {
-      profileId: 'prof1',
-      fullName: 'Juan Pérez',
-      profilePicture: 'assets/experthub_logo.png',
-      profession: 'Electricista',
-      location: { city: 'San José' },
-      experienceYears: 10,
-      availability: true,
-      rating: 4.5,
-      membership: true
-    },
-    {
-      profileId: 'prof2',
-      fullName: 'María Gómez',
-      profilePicture: 'assets/experthub_logo.png',
-      profession: 'Plomera',
-      location: { city: 'Heredia' },
-      experienceYears: 8,
-      availability: true,
-      rating: 4.8,
-      membership: false
-    },
-    {
-      profileId: 'prof3',
-      fullName: 'Carlos Ruiz',
-      profilePicture: 'assets/experthub_logo.png',
-      profession: 'Diseñador Gráfico',
-      location: { city: 'Alajuela' },
-      experienceYears: 5,
-      availability: false,
-      rating: 4.2,
-      membership: true
-    },
-    {
-      profileId: 'prof4',
-      fullName: 'Ana López',
-      profilePicture: 'assets/experthub_logo.png',
-      profession: 'Carpintera',
-      location: { city: 'Cartago' },
-      experienceYears: 8,
-      availability: true,
-      rating: 4.7,
-      membership: false
-    }
-  ];
+  firestore = inject(Firestore);
+  router = inject(Router);
+
+  professionals$!: Observable<Professional[]>;
+  filteredProfessionals: Professional[] = [];
+  filteredCategories: { label: string, value: string }[] = [];
+
+  currentUserId = 'client1';
+  searchQuery = '';
+  showCategoryDropdown = false;
+  hoveredProfileId: string | null = null;
+  hoverTimer: any;
+  isSidebarActive = false;
+  isUserMenuVisible = false;
+  userMenuTimer: any;
 
   categories = [
     { label: 'Electricidad', value: 'electricity' },
@@ -65,31 +36,21 @@ export class MainPageComponent implements OnInit {
     { label: 'Carpintería', value: 'carpentry' }
   ];
 
-  filteredProfessionals: Professional[] = [];
-  filteredCategories: { label: string, value: string }[] = [];
-  isSidebarActive = false;
-  currentUserId = 'client1';
-  searchQuery = '';
-  showCategoryDropdown = false;
-  hoveredProfileId: string | null = null;
-  hoverTimer: any;
-  isUserMenuVisible = false;
-  userMenuTimer: any;
-
   filters = {
     category: { search: '', selected: '' },
-    availability: { available: false },
     experience: { entry: false, junior: false, middle: false, senior: false },
-    rating: { excellent: false, high: false, mid: false, low: false },
-    location: { city: '', nearby: false },
-    membership: { premium: false, standard: false }
+    location: { city: '', nearby: false }
   };
 
-  constructor(private router: Router) {}
-
   ngOnInit() {
-    this.filteredProfessionals = [...this.professionals];
-    this.filteredCategories = [...this.categories];
+    const profilesRef = collection(this.firestore, 'profesionales');
+    this.professionals$ = collectionData(profilesRef, { idField: 'idNumber' }) as Observable<Professional[]>;
+
+    this.professionals$.subscribe((data) => {
+      this.filteredProfessionals = data;
+      this.filteredCategories = [...this.categories];
+      this.applyFilters();
+    });
   }
 
   toggleSidebar() {
@@ -175,54 +136,41 @@ export class MainPageComponent implements OnInit {
   }
 
   applyFilters() {
-    this.filteredProfessionals = this.professionals.filter(prof => {
-      const searchMatch = !this.searchQuery ||
-        prof.fullName.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-        prof.profession.toLowerCase().includes(this.searchQuery.toLowerCase());
+    this.professionals$.subscribe(professionals => {
+      this.filteredProfessionals = professionals.filter(prof => {
+        const searchMatch = !this.searchQuery ||
+          prof.fullName.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+          (prof.professions || []).some(p => p.toLowerCase().includes(this.searchQuery.toLowerCase()));
 
-      const categoryMatch = !this.filters.category.selected ||
-        (this.filters.category.selected === 'electricity' && prof.profession.toLowerCase().includes('electricista')) ||
-        (this.filters.category.selected === 'plumbing' && prof.profession.toLowerCase().includes('plomera')) ||
-        (this.filters.category.selected === 'design' && prof.profession.toLowerCase().includes('diseñador')) ||
-        (this.filters.category.selected === 'carpentry' && prof.profession.toLowerCase().includes('carpintera'));
+        const categoryMatch = !this.filters.category.selected ||
+          (this.filters.category.selected === 'electricity' && (prof.professions || []).some(p => p.toLowerCase().includes('electricista'))) ||
+          (this.filters.category.selected === 'plumbing' && (prof.professions || []).some(p => p.toLowerCase().includes('plomera'))) ||
+          (this.filters.category.selected === 'design' && (prof.professions || []).some(p => p.toLowerCase().includes('diseñador'))) ||
+          (this.filters.category.selected === 'carpentry' && (prof.professions || []).some(p => p.toLowerCase().includes('carpintera')));
 
-      const availabilityMatch = !this.filters.availability.available || prof.availability;
+        const experience = prof.experienceYears ?? 0;
+        const experienceMatch = (!this.filters.experience.entry && !this.filters.experience.junior &&
+          !this.filters.experience.middle && !this.filters.experience.senior) ||
+          (this.filters.experience.entry && experience <= 2) ||
+          (this.filters.experience.junior && experience >= 3 && experience <= 5) ||
+          (this.filters.experience.middle && experience >= 6 && experience <= 10) ||
+          (this.filters.experience.senior && experience > 10);
 
-      const experienceMatch = (!this.filters.experience.entry && !this.filters.experience.junior &&
-        !this.filters.experience.middle && !this.filters.experience.senior) ||
-        (this.filters.experience.entry && prof.experienceYears <= 2) ||
-        (this.filters.experience.junior && prof.experienceYears >= 3 && prof.experienceYears <= 5) ||
-        (this.filters.experience.middle && prof.experienceYears >= 6 && prof.experienceYears <= 10) ||
-        (this.filters.experience.senior && prof.experienceYears > 10);
+        const locationMatch = !this.filters.location.city ||
+          (prof.location || '').toLowerCase().includes(this.filters.location.city.toLowerCase());
 
-      const ratingMatch = (!this.filters.rating.excellent && !this.filters.rating.high &&
-        !this.filters.rating.mid && !this.filters.rating.low) ||
-        (this.filters.rating.excellent && prof.rating >= 4.5) ||
-        (this.filters.rating.high && prof.rating >= 4 && prof.rating < 4.5) ||
-        (this.filters.rating.mid && prof.rating >= 3 && prof.rating < 4) ||
-        (this.filters.rating.low && prof.rating < 3);
+        const nearbyMatch = !this.filters.location.nearby || true;
 
-      const locationMatch = !this.filters.location.city ||
-        (prof.location.city && prof.location.city.toLowerCase().includes(this.filters.location.city.toLowerCase()));
-      const nearbyMatch = !this.filters.location.nearby || true;
-
-      const membershipMatch = (!this.filters.membership.premium && !this.filters.membership.standard) ||
-        (this.filters.membership.premium && prof.membership) ||
-        (this.filters.membership.standard && !prof.membership);
-
-      return searchMatch && categoryMatch && availabilityMatch && experienceMatch &&
-             ratingMatch && locationMatch && nearbyMatch && membershipMatch;
+        return searchMatch && categoryMatch && experienceMatch && locationMatch && nearbyMatch;
+      });
     });
   }
 
   clearFilters() {
     this.filters = {
       category: { search: '', selected: '' },
-      availability: { available: false },
       experience: { entry: false, junior: false, middle: false, senior: false },
-      rating: { excellent: false, high: false, mid: false, low: false },
-      location: { city: '', nearby: false },
-      membership: { premium: false, standard: false }
+      location: { city: '', nearby: false }
     };
     this.searchQuery = '';
     this.filteredCategories = [...this.categories];
@@ -233,49 +181,40 @@ export class MainPageComponent implements OnInit {
     if (filterType === 'category') {
       this.filters.category = { search: '', selected: '' };
       this.filteredCategories = [...this.categories];
-    } else if (filterType === 'availability') {
-      this.filters.availability.available = false;
     } else if (filterType === 'experience') {
       this.filters.experience = { entry: false, junior: false, middle: false, senior: false };
-    } else if (filterType === 'rating') {
-      this.filters.rating = { excellent: false, high: false, mid: false, low: false };
     } else if (filterType === 'location') {
       this.filters.location = { city: '', nearby: false };
-    } else if (filterType === 'membership') {
-      this.filters.membership = { premium: false, standard: false };
     }
     this.applyFilters();
   }
 
   getCount(filter: string): number {
-    if (filter === 'electricity') return this.professionals.filter(p => p.profession.toLowerCase().includes('electricista')).length;
-    if (filter === 'plumbing') return this.professionals.filter(p => p.profession.toLowerCase().includes('plomera')).length;
-    if (filter === 'design') return this.professionals.filter(p => p.profession.toLowerCase().includes('diseñador')).length;
-    if (filter === 'carpentry') return this.professionals.filter(p => p.profession.toLowerCase().includes('carpintera')).length;
-    if (filter === 'available') return this.professionals.filter(p => p.availability).length;
-    if (filter === 'entry') return this.professionals.filter(p => p.experienceYears <= 2).length;
-    if (filter === 'junior') return this.professionals.filter(p => p.experienceYears >= 3 && p.experienceYears <= 5).length;
-    if (filter === 'middle') return this.professionals.filter(p => p.experienceYears >= 6 && p.experienceYears <= 10).length;
-    if (filter === 'senior') return this.professionals.filter(p => p.experienceYears > 10).length;
-    if (filter === 'excellent') return this.professionals.filter(p => p.rating >= 4.5).length;
-    if (filter === 'high') return this.professionals.filter(p => p.rating >= 4 && p.rating < 4.5).length;
-    if (filter === 'mid') return this.professionals.filter(p => p.rating >= 3 && p.rating < 4).length;
-    if (filter === 'low') return this.professionals.filter(p => p.rating < 3).length;
-    if (filter === 'nearby') return this.professionals.length;
-    if (filter === 'premium') return this.professionals.filter(p => p.membership).length;
-    if (filter === 'standard') return this.professionals.filter(p => !p.membership).length;
-    return 0;
+    return this.filteredProfessionals.filter(p => {
+      const experience = p.experienceYears ?? 0;
+      if (filter === 'electricity') return (p.professions || []).some(prof => prof.toLowerCase().includes('electricista'));
+      if (filter === 'plumbing') return (p.professions || []).some(prof => prof.toLowerCase().includes('plomera'));
+      if (filter === 'design') return (p.professions || []).some(prof => prof.toLowerCase().includes('diseñador'));
+      if (filter === 'carpentry') return (p.professions || []).some(prof => prof.toLowerCase().includes('carpintera'));
+      if (filter === 'entry') return experience <= 2;
+      if (filter === 'junior') return experience >= 3 && experience <= 5;
+      if (filter === 'middle') return experience >= 6 && experience <= 10;
+      if (filter === 'senior') return experience > 10;
+      if (filter === 'nearby') return true;
+      return false;
+    }).length;
   }
 }
 
 interface Professional {
-  profileId: string;
+  idNumber: string;
+  email: string;
   fullName: string;
-  profilePicture: string;
-  profession: string;
-  location: { city: string };
-  experienceYears: number;
-  availability: boolean;
-  rating: number;
-  membership: boolean;
+  location: string;
+  professions: string[];
+  experienceYears: number | null;
+  description?: string;
+  sites?: string[];
+  phone?: string;
+  contactEmail?: string;
 }
