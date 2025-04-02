@@ -25,7 +25,7 @@
   <div class="side-profile animate-profile" style="--delay: 0.6s;">
     <div class="info">
       <img src="assets/experthub_logo.png" alt="Perfil">
-      <a href="#" [routerLink]="['/profile', currentUserId]">Juan.Pérez</a>
+      <a href="#" [routerLink]="['/professional', currentUserId]">Juan.Pérez</a>
       <p>Electricista</p>
     </div>
     <div class="skills">
@@ -37,18 +37,18 @@
         <div class="item"><p>Diagnóstico</p></div>
       </div>
     </div>
-    <button [routerLink]="['/profile', currentUserId]">Ver Perfil</button>
+    <button [routerLink]="['/professional', currentUserId]">Ver Perfil</button>
   </div>
 </div>
 
-<div class="container animate-entry">
+<div class="container animate-entry" *ngIf="professional; else loading">
   <div class="profile-header">
-    <img src="{{ profile.profilePicture }}" alt="{{ profile.fullName }}">
+    <img [src]="professional.profilePicture || 'assets/default-profile.png'" [alt]="professional.fullName || 'Perfil'">
     <div class="info">
-      <h1>{{ profile.fullName }} <span class="rating">★ {{ profile.rating }} ({{ profile.totalReviews }} reseñas)</span></h1>
-      <p>{{ profile.profession }} | {{ profile.location.city }}, {{ profile.location.country }}</p>
-      <p>{{ profile.experienceYears }} años de experiencia</p>
-      <p class="status" [ngClass]="{'unavailable': !profile.availability}">{{ profile.availability ? 'Disponible ahora' : 'No disponible' }}</p>
+      <h1>{{ professional.fullName }} <span class="rating">★ {{ professional.rating || 0 }} ({{ professional.totalReviews || 0 }} reseñas)</span></h1>
+      <p>{{ professional.professions[0] || 'Sin profesión' }} | {{ professional.locationDetails?.city || professional.location || 'Sin ciudad' }}, {{ professional.locationDetails?.country || 'Sin país' }}</p>
+      <p>{{ professional.experienceYears || 0 }} años de experiencia</p>
+      <p class="status" [ngClass]="{'unavailable': !professional.availability}">{{ professional.availability ? 'Disponible ahora' : 'No disponible' }}</p>
     </div>
     <div class="actions">
       <button class="contact-btn" (click)="contactProfessional()">Contactar</button>
@@ -68,50 +68,54 @@
     <div class="overview" *ngIf="activeTab === 'overview'">
       <div class="description">
         <h4>Acerca de mí</h4>
-        <p>{{ profile.description }}</p>
+        <p>{{ professional.description || 'Sin descripción' }}</p>
       </div>
       <div class="details">
         <h4>Detalles</h4>
-        <div class="item"><span>Teléfono</span><span>{{ profile.contact.phone }}</span></div>
-        <div class="item"><span>Email</span><span>{{ profile.contact.email }}</span></div>
-        <div class="item"><span>Vistas</span><span>{{ profile.views }}</span></div>
-        <div class="item websites"><span>Sitios web</span><span><a *ngFor="let url of profile.websites" (click)="visitWebsite(url)">{{ url }}</a></span></div>
+        <div class="item"><span>Teléfono</span><span>{{ professional.phone || 'No disponible' }}</span></div>
+        <div class="item"><span>Email</span><span>{{ professional.contactEmail || 'No disponible' }}</span></div>
+        <div class="item"><span>Vistas</span><span>{{ professional.views || 0 }}</span></div>
+        <div class="item websites"><span>Sitios web</span><span><a *ngFor="let url of professional.sites" (click)="visitWebsite(url)">{{ url }}</a></span></div>
       </div>
     </div>
 
     <div class="skills" *ngIf="activeTab === 'skills'">
-      <div class="skill-card" *ngFor="let skill of profile.skills">
-        <h5>{{ skill.name }}</h5>
-        <p class="level">{{ skill.level }}</p>
-        <p>{{ skill.description }}</p>
+      <div class="skill-card" *ngFor="let skill of professional.skills_array">
+        <h5>{{ skill }}</h5>
       </div>
     </div>
 
     <div class="portfolio" *ngIf="activeTab === 'portfolio'">
-      <div class="card" *ngFor="let project of profile.portfolio">
+      <div class="card" *ngFor="let project of portfolio">
         <h5>{{ project.title }}</h5>
         <p>{{ project.description }}</p>
-        <img *ngFor="let img of project.images" src="{{ img }}" alt="{{ project.title }}">
-        <p>{{ project.date | date:'mediumDate' }}</p>
+        <img *ngFor="let img of project.images_array" [src]="img" [alt]="project.title">
+        <p>{{ project.date?.toDate() | date:'mediumDate' }}</p>
       </div>
     </div>
-
+    
     <div class="courses" *ngIf="activeTab === 'courses'">
-      <div class="card" *ngFor="let course of profile.courses">
+      <div class="card" *ngFor="let course of courses">
         <h5>{{ course.title }}</h5>
         <p>{{ course.institution }}</p>
-        <p>{{ course.completionDate | date:'mediumDate' }}</p>
+        <p>{{ course.completionDate?.toDate() | date:'mediumDate' }}</p>
         <a (click)="visitWebsite(course.certificateUrl)">Ver certificado</a>
       </div>
     </div>
-
+    
     <div class="reviews" *ngIf="activeTab === 'reviews'">
-      <div class="card" *ngFor="let review of profile.reviews">
+      <div class="card" *ngFor="let review of reviews">
         <h5>{{ review.rating }} ★</h5>
         <p>{{ review.comment }}</p>
-        <img *ngFor="let img of review.images" src="{{ img }}" alt="Review">
-        <p>{{ review.date | date:'mediumDate' }}</p>
+        <img *ngFor="let img of review.images_array" [src]="img" alt="Review">
+        <p>{{ review.date?.toDate() | date:'mediumDate' }}</p>
       </div>
     </div>
   </div>
 </div>
+
+<ng-template #loading>
+  <div class="container animate-entry">
+    <p>Cargando perfil...</p>
+  </div>
+</ng-template>

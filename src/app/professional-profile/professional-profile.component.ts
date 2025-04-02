@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { FirestoreService, Professional } from '../services/firestore.service';
 
 @Component({
   selector: 'app-professional-profile',
@@ -11,50 +12,34 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./professional-profile.component.css']
 })
 export class ProfessionalProfileComponent implements OnInit {
-  profile: any = null;
+  firestoreService = inject(FirestoreService);
+  route = inject(ActivatedRoute);
+  router = inject(Router);
+
+  professional: Professional | null = null;
+  portfolio: any[] = [];
+  courses: any[] = [];
+  reviews: any[] = [];
   isSidebarActive = false;
   currentUserId = 'client1';
   activeTab = 'overview';
 
-  profiles = [
-    {
-      profileId: 'prof1',
-      fullName: 'Juan Pérez',
-      profilePicture: 'https://example.com/juan.jpg',
-      profession: 'Electricista',
-      location: { lat: 9.9333, lng: -84.0833, city: 'San José', country: 'Costa Rica' },
-      description: 'Especialista en instalaciones eléctricas con 10 años de experiencia. Comprometido con la calidad y la seguridad.',
-      websites: ['https://juanperez.com', 'https://portfolio.juanperez.com'],
-      contact: { phone: '+50612345678', email: 'prof1@example.com' },
-      rating: 4.5,
-      totalReviews: 10,
-      availability: true,
-      membership: true,
-      skills: [
-        { name: 'Cableado', level: 'Experto', description: 'Diseño y ejecución de sistemas de cableado complejos.' },
-        { name: 'Instalación', level: 'Avanzado', description: 'Instalaciones eléctricas residenciales y comerciales.' },
-        { name: 'Reparación', level: 'Experto', description: 'Diagnóstico y solución de fallos eléctricos.' },
-        { name: 'Diagnóstico', level: 'Avanzado', description: 'Identificación precisa de problemas eléctricos.' }
-      ],
-      experienceYears: 10,
-      views: 150,
-      portfolio: [
-        { projectId: 'proj1', title: 'Instalación Eléctrica Residencial', description: 'Instalación completa en casa de 3 habitaciones.', images: ['https://example.com/proj1-1.jpg', 'https://example.com/proj1-2.jpg'], date: new Date('2024-01-15') }
-      ],
-      courses: [
-        { courseId: 'course1', title: 'Certificación en Electricidad', institution: 'INTEC', completionDate: new Date('2020-06-20'), certificateUrl: 'https://example.com/cert1.pdf' }
-      ],
-      reviews: [
-        { reviewId: 'rev1', clientId: 'client1', rating: 5, comment: 'Excelente trabajo, muy profesional.', images: ['https://example.com/rev1.jpg'], date: new Date() }
-      ]
-    }
-  ];
-
-  constructor(private route: ActivatedRoute, private router: Router) {}
-
   ngOnInit() {
-    const profileId = this.route.snapshot.paramMap.get('id');
-    this.profile = this.profiles.find(p => p.profileId === profileId) || this.profiles[0];
+    const idNumber = this.route.snapshot.paramMap.get('id');
+    if (idNumber) {
+      this.firestoreService.getProfessionalById(idNumber).then(professional => {
+        this.professional = professional || null;
+        if (this.professional) {
+          this.loadSubcollections(idNumber);
+        }
+      });
+    }
+  }
+
+  async loadSubcollections(idNumber: string) {
+    this.portfolio = await this.firestoreService.getPortfolio(idNumber);
+    this.courses = await this.firestoreService.getCourses(idNumber);
+    this.reviews = await this.firestoreService.getReviews(idNumber);
   }
 
   toggleSidebar() {
@@ -72,7 +57,9 @@ export class ProfessionalProfileComponent implements OnInit {
   }
 
   contactProfessional() {
-    window.location.href = `mailto:${this.profile.contact.email}?subject=Consulta%20desde%20ExpertHub`;
+    if (this.professional?.contactEmail) {
+      window.location.href = `mailto:${this.professional.contactEmail}?subject=Consulta%20desde%20ExpertHub`;
+    }
   }
 
   visitWebsite(url: string) {
@@ -80,6 +67,8 @@ export class ProfessionalProfileComponent implements OnInit {
   }
 
   hireProfessional() {
-    this.router.navigate(['/hire', this.profile.profileId]);
+    if (this.professional?.idNumber) {
+      this.router.navigate(['/hire', this.professional.idNumber]);
+    }
   }
 }

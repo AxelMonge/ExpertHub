@@ -13,6 +13,15 @@ export interface Professional {
   sites: string[];
   phone: string;
   contactEmail: string;
+  profilePicture?: string;
+  locationDetails?: { lat: number; lng: number; city: string; country: string };
+  rating?: number;
+  totalReviews?: number;
+  availability?: boolean;
+  membership?: boolean;
+  skills_array?: string[];
+  views?: number;
+  updatedAt?: any;
 }
 
 export interface Client {
@@ -77,5 +86,23 @@ export class FirestoreService {
     const q = query(usersRef, where('email', '==', email), where('password', '==', password));
     const querySnapshot = await getDocs(q);
     return querySnapshot.empty ? undefined : { id: querySnapshot.docs[0].id, ...querySnapshot.docs[0].data() } as unknown as User;
+  }
+
+  async getPortfolio(idNumber: string): Promise<any[]> {
+    const portfolioRef = collection(this.firestore, `professionals/${idNumber}/portfolio`);
+    const snapshot = await getDocs(portfolioRef);
+    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  }
+  
+  async getCourses(idNumber: string): Promise<any[]> {
+    const coursesRef = collection(this.firestore, `professionals/${idNumber}/courses`);
+    const snapshot = await getDocs(coursesRef);
+    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  }
+  
+  async getReviews(idNumber: string): Promise<any[]> {
+    const reviewsRef = collection(this.firestore, `professionals/${idNumber}/reviews`);
+    const snapshot = await getDocs(reviewsRef);
+    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
   }
 }
