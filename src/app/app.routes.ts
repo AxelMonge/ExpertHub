@@ -5,6 +5,7 @@ import { ProfessionalProfileComponent } from './professional-profile/professiona
 import { AiAssistantComponent } from './ai-assistant/ai-assistant.component';
 import { LoginComponent } from './login/login.component';
 import { SignupComponent } from './signup/signup.component';
+import { ProfileViewComponent } from './profile-view/profile-view.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -12,5 +13,6 @@ export const routes: Routes = [
   { path: 'profile/:id', component: ProfessionalProfileComponent },
   { path: 'ai-assistant', component: AiAssistantComponent },
   { path: 'login', component: LoginComponent },
-  { path: 'signup', component: SignupComponent }
+  { path: 'signup', component: SignupComponent },
+  { path: 'profile-view', component: ProfileViewComponent }
 ];

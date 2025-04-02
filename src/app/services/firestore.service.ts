@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { Firestore, collection, collectionData, doc, getDoc, addDoc, query, where, getDocs } from '@angular/fire/firestore';
+import { Firestore, collection, collectionData, doc, getDoc, addDoc, query, where, getDocs, setDoc } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 
 export interface Professional {
@@ -29,6 +29,7 @@ export interface Client {
   email: string;
   fullName: string;
   location: string;
+  profilePicture?: string;
 }
 
 export interface User {
@@ -72,20 +73,18 @@ export class FirestoreService {
   getCurrentUser(): User | null {
     return this.currentUser;
   }
-  async getUserFromCurrent(): Promise<Client | Professional | undefined> {
+
+  async getCurrentProfile(): Promise<Client | Professional | undefined> {
     try {
-      // 1. Verificar si hay un currentUser
       if (!this.currentUser) {
         console.error('No hay usuario logueado');
         return undefined;
       }
   
-      // 2. Determinar la colección según el rol
       const collectionName = this.currentUser.role === 'client' ? 'clients' : 'professionals';
   
-      // 3. Buscar en Firestore (usando idNumber o userId como referencia)
       const collectionRef = collection(this.firestore, collectionName);
-      const q = query(collectionRef, where('idNumber', '==', this.currentUser.userId)); // Ajusta el campo según tu DB
+      const q = query(collectionRef, where('idNumber', '==', this.currentUser.userId));
       const querySnapshot = await getDocs(q);
   
       if (querySnapshot.empty) {
@@ -93,7 +92,6 @@ export class FirestoreService {
         return undefined;
       }
   
-      // 4. Devolver los datos del documento encontrado
       const userDoc = querySnapshot.docs[0];
       const userData = { idNumber: userDoc.id, ...userDoc.data() };
   
@@ -105,6 +103,21 @@ export class FirestoreService {
     } catch (error) {
       console.error('Error al buscar usuario por rol:', error);
       return undefined;
+    }
+  }
+
+  async updateProfile(userId: string, role: 'client' | 'professional', data: Partial<Client> | Partial<Professional>) {
+    const collectionName = role === 'client' ? 'clients' : 'professionals';
+    const profileRef = collection(this.firestore, collectionName);
+    const q = query(profileRef, where('idNumber', '==', userId));
+    const querySnapshot = await getDocs(q);
+
+    if (!querySnapshot.empty) {
+      const docRef = querySnapshot.docs[0].ref;
+      await setDoc(docRef, data, { merge: true });
+      console.log(`${role} actualizado con éxito`);
+    } else {
+      console.log(`No se encontró ${role} con idNumber: ${userId}`);
     }
   }
 

@@ -58,7 +58,7 @@ export class MainPageComponent implements OnInit {
   }
 
   async loadUserData() {
-    const userData = await this.firestoreService.getUserFromCurrent();
+    const userData = await this.firestoreService.getCurrentProfile();
     if (userData) {
       this.currentProfile = userData;
       console.log('Datos del usuario cargados:', this.currentProfile);
@@ -220,6 +220,10 @@ export class MainPageComponent implements OnInit {
 
   getCurrentUser(){
     return this.firestoreService.getCurrentUser();
+  }
+
+  navigateToProfile() {
+    this.router.navigate(['/profile-view']);
   }
 }
 

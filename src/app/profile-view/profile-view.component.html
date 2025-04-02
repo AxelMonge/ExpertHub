@@ -1,0 +1,137 @@
+<div class="sidebar animate-sidebar">
+  <a href="#" [routerLink]="['/']" class="logo">ExpertHub</a>
+  <div class="side-nav">
+    <div class="item animate-item" style="--delay: 0.1s;">
+      <i class='bx bx-search-alt'></i>
+      <a href="#" [routerLink]="['/main-page']">Profesionales</a>
+    </div>
+    <div class="item animate-item" style="--delay: 0.2s;">
+      <i class='bx bx-bot'></i>
+      <a href="#" [routerLink]="['/ai-assistant']">Asistente IA</a>
+    </div>
+    <div class="item animate-item" style="--delay: 0.3s;">
+      <i class='bx bx-briefcase'></i>
+      <a href="#" [routerLink]="['/requests']">Mis Solicitudes</a>
+    </div>
+    <div class="item animate-item" style="--delay: 0.4s;">
+      <i class='bx bx-store'></i>
+      <a href="#" [routerLink]="['/marketplace']">Mercado</a>
+    </div>
+    <div class="item animate-item" style="--delay: 0.5s;">
+      <i class='bx bx-cog'></i>
+      <a href="#" [routerLink]="['/settings']">Configuración</a>
+    </div>
+  </div>
+  <div class="side-profile animate-profile" style="--delay: 0.6s;">
+    <div class="info">
+      <img [src]="(currentUser?.role === 'professional' && professionalData?.profilePicture) || 'assets/pfp_placeholder.jpg'" alt="Perfil">
+      <a href="#" [routerLink]="['/profile-view']">{{ clientData?.fullName || professionalData?.fullName || 'Usuario' }}</a>
+      <p>{{ currentUser?.role || 'N/A' }}</p>
+    </div>
+    <div class="skills" *ngIf="currentUser?.role === 'professional' && professionalData?.skills_array">
+      <h5>Habilidades</h5>
+      <div class="skill-tags">
+        <div class="item" *ngFor="let skill of professionalData?.skills_array"><p>{{ skill }}</p></div>
+      </div>
+    </div>
+    <button [routerLink]="['/profile-view']">Ver Perfil</button>
+  </div>
+</div>
+
+<div class="container animate-entry" *ngIf="currentUser; else loading">
+  <!-- Perfil de Cliente -->
+  <div *ngIf="currentUser.role === 'client' && clientData">
+    <div class="profile-header">
+      <img src="assets/pfp_placeholder.jpg" alt="Perfil">
+      <div class="info">
+        <h1>{{ clientData.fullName }}</h1>
+        <p>{{ clientData.email }}</p>
+        <p>{{ clientData.location }}</p>
+      </div>
+      <div class="actions">
+        <button class="contact-btn" (click)="toggleEdit()">{{ isEditing ? 'Cancelar' : 'Editar' }}</button>
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="overview">
+        <div class="description">
+          <h4>Datos Personales</h4>
+          <input *ngIf="isEditing" [(ngModel)]="clientData.fullName" placeholder="Nombre completo">
+          <p *ngIf="!isEditing">{{ clientData.fullName }}</p>
+          <input *ngIf="isEditing" [(ngModel)]="clientData.email" placeholder="Correo">
+          <p *ngIf="!isEditing">{{ clientData.email }}</p>
+          <input *ngIf="isEditing" [(ngModel)]="clientData.location" placeholder="Ubicación">
+          <p *ngIf="!isEditing">{{ clientData.location }}</p>
+          <button *ngIf="isEditing" class="save-btn" (click)="updateProfile()">Guardar Cambios</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Perfil de Profesional -->
+  <div *ngIf="currentUser.role === 'professional' && professionalData">
+    <div class="profile-header">
+      <img [src]="professionalData.profilePicture || 'assets/pfp_placeholder.jpg'" [alt]="professionalData.fullName || 'Perfil'">
+      <div class="info">
+        <h1>{{ professionalData.fullName }} <span class="rating">★ {{ professionalData.rating || 0 }} ({{ professionalData.totalReviews || 0 }} reseñas)</span></h1>
+        <p>{{ professionalData.professions[0] || 'Sin profesión' }} | {{ professionalData.location || 'Sin ubicación' }}</p>
+        <p>{{ professionalData.experienceYears || 0 }} años de experiencia</p>
+        <p class="status" [ngClass]="{'unavailable': !professionalData.availability}">{{ professionalData.availability ? 'Disponible ahora' : 'No disponible' }}</p>
+      </div>
+      <div class="actions">
+        <button class="contact-btn" (click)="toggleEdit()">{{ isEditing ? 'Cancelar' : 'Editar' }}</button>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button [ngClass]="{'active': activeTab === 'overview'}" (click)="setActiveTab('overview')">Resumen</button>
+      <button [ngClass]="{'active': activeTab === 'skills'}" (click)="setActiveTab('skills')">Habilidades</button>
+    </div>
+
+    <div class="content">
+      <div class="overview" *ngIf="activeTab === 'overview'">
+        <div class="description">
+          <h4>Acerca de mí</h4>
+          <textarea *ngIf="isEditing" [(ngModel)]="professionalData.description" placeholder="Descripción"></textarea>
+          <p *ngIf="!isEditing">{{ professionalData.description || 'Sin descripción' }}</p>
+        </div>
+        <div class="details">
+          <h4>Detalles</h4>
+          <div class="item">
+            <span>Teléfono</span>
+            <input *ngIf="isEditing" [(ngModel)]="professionalData.phone" placeholder="Teléfono">
+            <span *ngIf="!isEditing">{{ professionalData.phone || 'No disponible' }}</span>
+          </div>
+          <div class="item">
+            <span>Email</span>
+            <input *ngIf="isEditing" [(ngModel)]="professionalData.contactEmail" placeholder="Correo de contacto">
+            <span *ngIf="!isEditing">{{ professionalData.contactEmail || 'No disponible' }}</span>
+          </div>
+          <div class="item">
+            <span>Sitios web</span>
+            <input *ngIf="isEditing" [(ngModel)]="professionalData.sites[0]" placeholder="Sitio web">
+            <span *ngIf="!isEditing"><a *ngFor="let url of professionalData.sites" (click)="visitWebsite(url)">{{ url }}</a></span>
+          </div>
+          <button *ngIf="isEditing" class="save-btn" (click)="updateProfile()">Guardar Cambios</button>
+        </div>
+      </div>
+
+      <div class="skills" *ngIf="activeTab === 'skills'">
+        <div class="skill-card" *ngFor="let skill of professionalData.skills_array">  
+          <!-- <p>dsasd</p> -->
+          <input *ngIf="isEditing"  placeholder="Habilidad">
+          <!-- [(ngModel)]="skill" -->
+          <h5 *ngIf="!isEditing">{{ skill }}</h5>
+        </div>
+        <button *ngIf="isEditing" class="save-btn" (click)="updateProfile()">Guardar Cambios</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #loading>
+  <div class="container animate-entry">
+    <p>Cargando perfil...</p>
+  </div>
+</ng-template>
