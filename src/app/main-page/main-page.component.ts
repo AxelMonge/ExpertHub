@@ -43,7 +43,7 @@ export class MainPageComponent implements OnInit {
   };
 
   ngOnInit() {
-    const profilesRef = collection(this.firestore, 'profesionales');
+    const profilesRef = collection(this.firestore, 'professionals'); //aqui tambien
     this.professionals$ = collectionData(profilesRef, { idField: 'idNumber' }) as Observable<Professional[]>;
 
     this.professionals$.subscribe((data) => {
