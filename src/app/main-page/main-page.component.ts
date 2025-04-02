@@ -21,7 +21,8 @@ export class MainPageComponent implements OnInit {
   professionals$!: Observable<Professional[]>;
   filteredProfessionals: Professional[] = [];
   filteredCategories: { label: string, value: string }[] = [];
-currentUser: Client | Professional | null = null;
+  currentProfile: Client | Professional | null = null;
+  role = '';
 
   searchQuery = '';
   showCategoryDropdown = false;
@@ -44,8 +45,8 @@ currentUser: Client | Professional | null = null;
     location: { city: '', nearby: false }
   };
 
-  ngOnInit() {
-    this.currentUser = this.firestoreService.getCurrentUser();
+  async ngOnInit() {
+    await this.loadUserData();
     const profilesRef = collection(this.firestore, 'professionals');
     this.professionals$ = collectionData(profilesRef, { idField: 'idNumber' }) as Observable<Professional[]>;
 
@@ -54,6 +55,16 @@ currentUser: Client | Professional | null = null;
       this.filteredCategories = [...this.categories];
       this.applyFilters();
     });
+  }
+
+  async loadUserData() {
+    const userData = await this.firestoreService.getUserFromCurrent();
+    if (userData) {
+      this.currentProfile = userData;
+      console.log('Datos del usuario cargados:', this.currentProfile);
+    } else {
+      console.error('No se pudieron cargar los datos del usuario');
+    }
   }
 
   toggleSidebar() {
@@ -205,6 +216,10 @@ currentUser: Client | Professional | null = null;
       if (filter === 'nearby') return true;
       return false;
     }).length;
+  }
+
+  getCurrentUser(){
+    return this.firestoreService.getCurrentUser();
   }
 }
 

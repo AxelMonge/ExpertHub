@@ -27,10 +27,10 @@
     <div class="side-profile animate-profile" style="--delay: 0.6s;">
       <div class="info">
         <img src="assets/pfp_placeholder.jpg" alt="Perfil">
-        <a href="#" [routerLink]="['/profile', currentUser]">
-          {{ currentUser?.fullName || 'Usuario' }}
+        <a href="#" [routerLink]="['/profile', currentProfile]">
+          {{ currentProfile?.fullName || 'Usuario' }}
         </a>
-        <p>{{ currentUser?.idNumber || 'N/A' }}</p>
+        <p>{{ getCurrentUser()?.role || 'N/A' }}</p>
       </div>
       <div class="skills">
         <h5>Habilidades</h5>
@@ -41,7 +41,7 @@
           <div class="item"><p>Diagnóstico</p></div>
         </div>
       </div>
-      <button [routerLink]="['/profile', currentUser]">Ver Perfil</button>
+      <button [routerLink]="['/profile', currentProfile]">Ver Perfil</button>
     </div>
   </div>
   
@@ -63,8 +63,8 @@
       <div class="user-info" (mouseenter)="showUserMenu()" (mouseleave)="hideUserMenu()">
         <img src="assets/experthub_logo.png" alt="Usuario">
         <div>
-          <a href="#" [routerLink]="['/profile', currentUser]">
-            {{ currentUser?.fullName || 'Usuario' }}
+          <a href="#" [routerLink]="['/profile', currentProfile]">
+            {{ currentProfile?.fullName || 'Usuario' }}
           </a>
         </div>
         <div class="user-menu" [ngClass]="{'visible': isUserMenuVisible}">
