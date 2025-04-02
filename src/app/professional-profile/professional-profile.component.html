@@ -43,10 +43,10 @@
 
 <div class="container animate-entry" *ngIf="professional; else loading">
   <div class="profile-header">
-    <img [src]="professional.profilePicture || 'assets/default-profile.png'" [alt]="professional.fullName || 'Perfil'">
+    <img [src]="professional.profilePicture || 'assets/pfp_placeholder.jpg'" [alt]="professional.fullName || 'Perfil'">
     <div class="info">
       <h1>{{ professional.fullName }} <span class="rating">★ {{ professional.rating || 0 }} ({{ professional.totalReviews || 0 }} reseñas)</span></h1>
-      <p>{{ professional.professions[0] || 'Sin profesión' }} | {{ professional.locationDetails?.city || professional.location || 'Sin ciudad' }}, {{ professional.locationDetails?.country || 'Sin país' }}</p>
+      <p>{{ professional.professions[0] || 'Sin profesión' }} | {{ professional.locationDetails?.city || professional.location || 'Sin ciudad' }}</p>
       <p>{{ professional.experienceYears || 0 }} años de experiencia</p>
       <p class="status" [ngClass]="{'unavailable': !professional.availability}">{{ professional.availability ? 'Disponible ahora' : 'No disponible' }}</p>
     </div>

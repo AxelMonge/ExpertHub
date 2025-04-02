@@ -107,9 +107,7 @@ export class MainPageComponent implements OnInit {
 
   startHoverTimer(profileId: string) {
     this.clearHoverTimer();
-    this.hoverTimer = setTimeout(() => {
-      this.hoveredProfileId = profileId;
-    }, 300);
+    this.hoveredProfileId = profileId;
   }
 
   clearHoverTimer() {
