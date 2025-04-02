@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { FirestoreService, User } from '../services/firestore.service';
+import { FirestoreService, Client, Professional } from '../services/firestore.service';
 
 @Component({
   selector: 'app-login',
@@ -24,9 +24,10 @@ export class LoginComponent {
       return;
     }
     try {
-      const user: User | undefined = await this.firestoreService.login(this.email, this.password);
+      const user: Client | Professional | undefined = await this.firestoreService.login(this.email, this.password);
       if (user) {
         this.errorMessage = '';
+        this.firestoreService.setCurrentUser(user);
         this.router.navigate(['/main-page']);
       } else {
         this.errorMessage = 'Correo o contraseña incorrectos';

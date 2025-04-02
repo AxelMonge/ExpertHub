@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Firestore, collection, collectionData } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
+import { FirestoreService, Client, Professional } from '../services/firestore.service';
 
 @Component({
   selector: 'app-main-page',
@@ -15,12 +16,13 @@ import { Observable } from 'rxjs';
 export class MainPageComponent implements OnInit {
   firestore = inject(Firestore);
   router = inject(Router);
+  firestoreService = inject(FirestoreService);
 
   professionals$!: Observable<Professional[]>;
   filteredProfessionals: Professional[] = [];
   filteredCategories: { label: string, value: string }[] = [];
+currentUser: Client | Professional | null = null;
 
-  currentUserId = 'client1';
   searchQuery = '';
   showCategoryDropdown = false;
   hoveredProfileId: string | null = null;
@@ -43,7 +45,8 @@ export class MainPageComponent implements OnInit {
   };
 
   ngOnInit() {
-    const profilesRef = collection(this.firestore, 'professionals'); //aqui tambien
+    this.currentUser = this.firestoreService.getCurrentUser();
+    const profilesRef = collection(this.firestore, 'professionals');
     this.professionals$ = collectionData(profilesRef, { idField: 'idNumber' }) as Observable<Professional[]>;
 
     this.professionals$.subscribe((data) => {
@@ -80,6 +83,7 @@ export class MainPageComponent implements OnInit {
   }
 
   logout() {
+    this.firestoreService.setCurrentUser(null);
     this.router.navigate(['/']);
   }
 
@@ -93,8 +97,8 @@ export class MainPageComponent implements OnInit {
   }
 
   selectCategory(value: string) {
-    this.filters.category.selected = value;
     this.filters.category.search = this.categories.find(cat => cat.value === value)?.label || '';
+    this.filters.category.selected = value;
     this.showCategoryDropdown = false;
     this.applyFilters();
   }
@@ -204,15 +208,3 @@ export class MainPageComponent implements OnInit {
   }
 }
 
-interface Professional {
-  idNumber: string;
-  email: string;
-  fullName: string;
-  location: string;
-  professions: string[];
-  experienceYears: number | null;
-  description?: string;
-  sites?: string[];
-  phone?: string;
-  contactEmail?: string;
-}

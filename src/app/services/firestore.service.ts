@@ -35,7 +35,7 @@ export interface User {
   email: string;
   password: string;
   userId: string;
-  role: string;
+  role: 'client' | 'professional';
   createdAt: Date;
   lastLogin: Date;
 }
@@ -44,7 +44,63 @@ export interface User {
   providedIn: 'root'
 })
 export class FirestoreService {
-  private firestore: Firestore = inject(Firestore);
+  
+  private currentUser: Client | Professional | null = null;
+
+  constructor(private firestore: Firestore) {}
+
+  async login(email: string, password: string): Promise<Client | Professional | undefined> {
+    // Buscar en la colección 'users'
+    const usersRef = collection(this.firestore, 'users');
+    const q = query(usersRef, where('email', '==', email), where('password', '==', password));
+    const querySnapshot = await getDocs(q);
+
+    if (querySnapshot.empty) {
+      console.log('No se encontró usuario con ese email y contraseña');
+      return undefined;
+    }
+
+    const userDoc = querySnapshot.docs[0];
+    const userData = { userId: userDoc.id, ...userDoc.data() } as User;
+    console.log('Usuario encontrado:', userData);
+
+    // Buscar en 'clients' o 'professionals' usando 'idNumber' como campo
+    if (userData.role === 'client') {
+      const clientsRef = collection(this.firestore, 'clients');
+      const clientQuery = query(clientsRef, where('idNumber', '==', userData.userId));
+      const clientSnapshot = await getDocs(clientQuery);
+      if (!clientSnapshot.empty) {
+        const clientDoc = clientSnapshot.docs[0];
+        console.log('Cliente encontrado:', clientDoc.data());
+        return { idNumber: clientDoc.id, ...clientDoc.data() } as Client;
+      } else {
+        console.log('No se encontró cliente con idNumber:', userData.userId);
+      }
+    } else if (userData.role === 'professional') {
+      const profsRef = collection(this.firestore, 'professionals');
+      const profQuery = query(profsRef, where('idNumber', '==', userData.userId));
+      const profSnapshot = await getDocs(profQuery);
+      if (!profSnapshot.empty) {
+        const profDoc = profSnapshot.docs[0];
+        console.log('Profesional encontrado:', profDoc.data());
+        return { idNumber: profDoc.id, ...profDoc.data() } as Professional;
+      } else {
+        console.log('No se encontró profesional con idNumber:', userData.userId);
+      }
+    }
+
+    console.log('No se encontró cliente o profesional asociado');
+    return undefined;
+  }
+
+  setCurrentUser(user: Client | Professional | null) {
+    this.currentUser = user;
+  }
+
+  getCurrentUser(): Client | Professional | null {
+    return this.currentUser;
+  }
+  
 
   getProfessionals(): Observable<Professional[]> {
     const professionalsRef = collection(this.firestore, 'professionals');
@@ -79,13 +135,6 @@ export class FirestoreService {
     const usersRef = collection(this.firestore, 'users');
     const docRef = await addDoc(usersRef, usuario);
     return docRef.id;
-  }
-
-  async login(email: string, password: string): Promise<User | undefined> {
-    const usersRef = collection(this.firestore, 'users');
-    const q = query(usersRef, where('email', '==', email), where('password', '==', password));
-    const querySnapshot = await getDocs(q);
-    return querySnapshot.empty ? undefined : { id: querySnapshot.docs[0].id, ...querySnapshot.docs[0].data() } as unknown as User;
   }
 
   async getPortfolio(idNumber: string): Promise<any[]> {

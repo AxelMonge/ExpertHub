@@ -26,9 +26,11 @@
   
     <div class="side-profile animate-profile" style="--delay: 0.6s;">
       <div class="info">
-        <img src="assets/experthub_logo.png" alt="Perfil">
-        <a href="#" [routerLink]="['/profile', currentUserId]">Juan.Pérez</a>
-        <p>Electricista</p>
+        <img src="assets/pfp_placeholder.jpg" alt="Perfil">
+        <a href="#" [routerLink]="['/profile', currentUser]">
+          {{ currentUser?.fullName || 'Usuario' }}
+        </a>
+        <p>{{ currentUser?.idNumber || 'N/A' }}</p>
       </div>
       <div class="skills">
         <h5>Habilidades</h5>
@@ -39,7 +41,7 @@
           <div class="item"><p>Diagnóstico</p></div>
         </div>
       </div>
-      <button [routerLink]="['/profile', currentUserId]">Ver Perfil</button>
+      <button [routerLink]="['/profile', currentUser]">Ver Perfil</button>
     </div>
   </div>
   
@@ -61,8 +63,9 @@
       <div class="user-info" (mouseenter)="showUserMenu()" (mouseleave)="hideUserMenu()">
         <img src="assets/experthub_logo.png" alt="Usuario">
         <div>
-          <a href="#">Cliente.X <i class='bx bx-chevron-down'></i></a>
-          <p>clientetest.com</p>
+          <a href="#" [routerLink]="['/profile', currentUser]">
+            {{ currentUser?.fullName || 'Usuario' }}
+          </a>
         </div>
         <div class="user-menu" [ngClass]="{'visible': isUserMenuVisible}">
           <a (click)="logout()">Cerrar Sesión</a>
