@@ -49,33 +49,32 @@ export class FirestoreService {
   }
 
   async agregarCliente(cliente: Client): Promise<string> {
-    const clientesRef = collection(this.firestore, 'clients');
-    const q = query(clientesRef, where('idNumber', '==', cliente.idNumber));
+    const clientsRef = collection(this.firestore, 'clients');
+    const q = query(clientsRef, where('idNumber', '==', cliente.idNumber));
     const querySnapshot = await getDocs(q);
     if (!querySnapshot.empty) throw new Error('Cédula ya registrada');
-    const docRef = await addDoc(clientesRef, cliente);
+    const docRef = await addDoc(clientsRef, cliente);
     return docRef.id;
   }
 
   async agregarProfesional(profesional: Professional): Promise<string> {
-    // const profesionalesRef = collection(this.firestore, 'profesionales');
-    const profesionalesRef = collection(this.firestore, 'professionals');
-    const q = query(profesionalesRef, where('idNumber', '==', profesional.idNumber));
+    const professionalsRef = collection(this.firestore, 'professionals');
+    const q = query(professionalsRef, where('idNumber', '==', profesional.idNumber));
     const querySnapshot = await getDocs(q);
     if (!querySnapshot.empty) throw new Error('Cédula ya registrada');
-    const docRef = await addDoc(profesionalesRef, profesional);
+    const docRef = await addDoc(professionalsRef, profesional);
     return docRef.id;
   }
 
   async agregarUsuario(usuario: User): Promise<string> {
-    const usuariosRef = collection(this.firestore, 'users');
-    const docRef = await addDoc(usuariosRef, usuario);
+    const usersRef = collection(this.firestore, 'users');
+    const docRef = await addDoc(usersRef, usuario);
     return docRef.id;
   }
 
   async login(email: string, password: string): Promise<User | undefined> {
-    const usuariosRef = collection(this.firestore, 'users');
-    const q = query(usuariosRef, where('email', '==', email), where('password', '==', password));
+    const usersRef = collection(this.firestore, 'users');
+    const q = query(usersRef, where('email', '==', email), where('password', '==', password));
     const querySnapshot = await getDocs(q);
     return querySnapshot.empty ? undefined : { id: querySnapshot.docs[0].id, ...querySnapshot.docs[0].data() } as unknown as User;
   }
