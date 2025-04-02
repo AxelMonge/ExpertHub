@@ -1,0 +1,191 @@
+const { initializeApp } = require('firebase/app');
+const { getFirestore, collection, doc, setDoc, getDocs, query, where, addDoc, Timestamp } = require('firebase/firestore');
+
+const firebaseConfig = {
+  apiKey: "your-api-key",
+  authDomain: "your-auth-domain",
+  projectId: "your-project-id",
+  storageBucket: "your-storage-bucket",
+  messagingSenderId: "your-messaging-sender-id",
+  appId: "your-app-id"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+async function checkDuplicate(collectionRef, field, value) {
+  const q = query(collectionRef, where(field, '==', value));
+  const querySnapshot = await getDocs(q);
+  if (!querySnapshot.empty) throw new Error(`${field} ya registrado`);
+}
+
+async function seedDatabase() {
+  try {
+    const usersRef = collection(db, 'users');
+    await checkDuplicate(usersRef, 'email', 'client1@example.com');
+    const userClient = await addDoc(usersRef, {
+      email: 'client1@example.com',
+      password: 'hashedpassword1',
+      userId: 'client1',
+      role: 'client',
+      createdAt: Timestamp.now(),
+      lastLogin: Timestamp.now()
+    });
+
+    await checkDuplicate(usersRef, 'email', 'prof1@example.com');
+    const userProf = await addDoc(usersRef, {
+      email: 'prof1@example.com',
+      password: 'hashedpassword2',
+      userId: 'prof1',
+      role: 'professional',
+      createdAt: Timestamp.now(),
+      lastLogin: Timestamp.now()
+    });
+
+    const clientsRef = collection(db, 'clients');
+    await checkDuplicate(clientsRef, 'idNumber', 'client1');
+    await addDoc(clientsRef, {
+      idNumber: 'client1',
+      email: 'client1@example.com',
+      fullName: 'Juan Pérez',
+      location: 'San José'
+    });
+
+    const professionalsRef = collection(db, 'professionals');
+    await checkDuplicate(professionalsRef, 'idNumber', 'prof1');
+    const profDoc = await addDoc(professionalsRef, {
+      idNumber: 'prof1',
+      email: 'prof1@example.com',
+      fullName: 'Juan Pérez',
+      location: 'San José',
+      professions: ['Electricista'],
+      experienceYears: 10,
+      description: 'Especialista en instalaciones eléctricas con 10 años de experiencia.',
+      sites: ['https://juanperez.com', 'https://portfolio.juanperez.com'],
+      phone: '+50612345678',
+      contactEmail: 'prof1@example.com',
+      profilePicture: 'https://example.com/juan.jpg',
+      locationDetails: { lat: 9.9333, lng: -84.0833, city: 'San José', country: 'Costa Rica' },
+      rating: 4.5,
+      totalReviews: 10,
+      availability: true,
+      membership: true,
+      skills_array: ['cableado', 'instalación', 'reparación'],
+      views: 150,
+      updatedAt: Timestamp.now()
+    });
+
+    await setDoc(doc(db, `professionals/${profDoc.id}/portfolio`, 'proj1'), {
+      projectId: 'proj1',
+      title: 'Instalación Eléctrica Residencial',
+      description: 'Instalación completa en casa de 3 habitaciones.',
+      images_array: ['https://example.com/proj1-1.jpg', 'https://example.com/proj1-2.jpg'],
+      date: Timestamp.fromDate(new Date('2024-01-15'))
+    });
+
+    await setDoc(doc(db, `professionals/${profDoc.id}/courses`, 'course1'), {
+      courseId: 'course1',
+      title: 'Certificación en Electricidad',
+      institution: 'INTEC',
+      completionDate: Timestamp.fromDate(new Date('2020-06-20')),
+      certificateUrl: 'https://example.com/cert1.pdf'
+    });
+
+    await setDoc(doc(db, `professionals/${profDoc.id}/reviews`, 'rev1'), {
+      reviewId: 'rev1',
+      clientId: 'client1',
+      rating: 5,
+      comment: 'Excelente trabajo, muy profesional.',
+      images_array: ['https://example.com/rev1.jpg'],
+      date: Timestamp.now()
+    });
+
+    await setDoc(doc(db, 'serviceRequests', 'req1'), {
+      requestId: 'req1',
+      clientId: 'client1',
+      title: 'Reparación de Cortocircuito',
+      description: 'Necesito arreglar un cortocircuito en la cocina.',
+      category: 'Electricidad',
+      location: { lat: 9.9333, lng: -84.0833, city: 'San José' },
+      maxPrice: 50000,
+      status: 'open',
+      createdAt: Timestamp.now(),
+      deadline: Timestamp.fromDate(new Date('2025-04-01'))
+    });
+
+    await setDoc(doc(db, 'serviceRequests/req1/bids', 'bid1'), {
+      bidId: 'bid1',
+      profileId: 'prof1',
+      price: 45000,
+      conditions: 'Incluye materiales',
+      submittedAt: Timestamp.now()
+    });
+
+    await setDoc(doc(db, 'serviceOffers', 'off1'), {
+      offerId: 'off1',
+      profileId: 'prof1',
+      title: 'Revisión Eléctrica Completa',
+      description: 'Revisión y mantenimiento de sistema eléctrico.',
+      category: 'Electricidad',
+      basePrice: 30000,
+      location: { lat: 9.9333, lng: -84.0833, city: 'San José' },
+      status: 'open',
+      createdAt: Timestamp.now(),
+      expiresAt: Timestamp.fromDate(new Date('2025-04-15'))
+    });
+
+    await setDoc(doc(db, 'serviceOffers/off1/clientBids', 'cbid1'), {
+      bidId: 'cbid1',
+      clientId: 'client1',
+      price: 35000,
+      submittedAt: Timestamp.now()
+    });
+
+    await setDoc(doc(db, 'enterprises', 'ent1'), {
+      enterpriseId: 'ent1',
+      name: 'ElectroSoluciones',
+      description: 'Equipo de electricistas profesionales.',
+      logo: 'https://example.com/electro.jpg',
+      location: { lat: 9.9333, lng: -84.0833, city: 'San José' },
+      websites_array: ['https://electrosoluciones.com'],
+      contact: { phone: '+50687654321', email: 'contact@electrosoluciones.com' },
+      members_array: ['prof1'],
+      rating: 4.8,
+      totalReviews: 5
+    });
+
+    await setDoc(doc(db, 'enterprises/ent1/portfolio', 'eproj1'), {
+      projectId: 'eproj1',
+      title: 'Instalación Comercial',
+      description: 'Sistema eléctrico para oficina de 200 m².',
+      images_array: ['https://example.com/eproj1.jpg'],
+      date: Timestamp.fromDate(new Date('2024-02-10'))
+    });
+
+    await setDoc(doc(db, 'enterprises/ent1/reviews', 'erev1'), {
+      reviewId: 'erev1',
+      clientId: 'client1',
+      rating: 4,
+      comment: 'Buen servicio, pero tardaron un poco.',
+      images_array: ['https://example.com/erev1.jpg'],
+      date: Timestamp.now()
+    });
+
+    await setDoc(doc(db, 'billingTransactions', 'trans1'), {
+      transactionId: 'trans1',
+      requestId: 'req1',
+      offerId: null,
+      clientId: 'client1',
+      profileId: 'prof1',
+      amount: 45000,
+      status: 'completed',
+      date: Timestamp.now()
+    });
+
+    console.log('Base de datos generada con éxito.');
+  } catch (error) {
+    console.error('Error al generar la base de datos:', error);
+  }
+}
+
+seedDatabase();
