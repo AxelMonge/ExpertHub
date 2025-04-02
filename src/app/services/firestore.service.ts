@@ -49,7 +49,7 @@ export class FirestoreService {
   }
 
   async agregarCliente(cliente: Client): Promise<string> {
-    const clientesRef = collection(this.firestore, 'clientes');
+    const clientesRef = collection(this.firestore, 'clients');
     const q = query(clientesRef, where('idNumber', '==', cliente.idNumber));
     const querySnapshot = await getDocs(q);
     if (!querySnapshot.empty) throw new Error('Cédula ya registrada');
@@ -58,7 +58,8 @@ export class FirestoreService {
   }
 
   async agregarProfesional(profesional: Professional): Promise<string> {
-    const profesionalesRef = collection(this.firestore, 'profesionales');
+    // const profesionalesRef = collection(this.firestore, 'profesionales');
+    const profesionalesRef = collection(this.firestore, 'professionals');
     const q = query(profesionalesRef, where('idNumber', '==', profesional.idNumber));
     const querySnapshot = await getDocs(q);
     if (!querySnapshot.empty) throw new Error('Cédula ya registrada');
@@ -67,13 +68,13 @@ export class FirestoreService {
   }
 
   async agregarUsuario(usuario: User): Promise<string> {
-    const usuariosRef = collection(this.firestore, 'usuarios');
+    const usuariosRef = collection(this.firestore, 'users');
     const docRef = await addDoc(usuariosRef, usuario);
     return docRef.id;
   }
 
   async login(email: string, password: string): Promise<User | undefined> {
-    const usuariosRef = collection(this.firestore, 'usuarios');
+    const usuariosRef = collection(this.firestore, 'users');
     const q = query(usuariosRef, where('email', '==', email), where('password', '==', password));
     const querySnapshot = await getDocs(q);
     return querySnapshot.empty ? undefined : { id: querySnapshot.docs[0].id, ...querySnapshot.docs[0].data() } as unknown as User;
