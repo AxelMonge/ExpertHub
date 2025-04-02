@@ -24,8 +24,6 @@ p {
     width: 100%;
     height: 100vh;
     background: #f5f5f5;
-    margin: 0;
-    padding: 0;
 }
 
 .sidebar {
@@ -44,14 +42,8 @@ p {
 }
 
 @keyframes slideInLeft {
-    0% {
-        opacity: 0;
-        transform: translateX(-100%);
-    }
-    100% {
-        opacity: 1;
-        transform: translateX(0);
-    }
+    0% { opacity: 0; transform: translateX(-100%); }
+    100% { opacity: 1; transform: translateX(0); }
 }
 
 .sidebar .logo {
@@ -82,17 +74,9 @@ p {
 }
 
 @keyframes bounceIn {
-    0% {
-        opacity: 0;
-        transform: translateY(20px) scale(0.8);
-    }
-    60% {
-        transform: translateY(-5px) scale(1.05);
-    }
-    100% {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
+    0% { opacity: 0; transform: translateY(20px) scale(0.8); }
+    60% { transform: translateY(-5px) scale(1.05); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 .sidebar .side-nav .item a {
@@ -135,14 +119,8 @@ p {
 }
 
 @keyframes fadeInUp {
-    0% {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    100% {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
 }
 
 .sidebar .side-profile .info img {
@@ -212,20 +190,9 @@ p {
 }
 
 @keyframes expandIn {
-    0% {
-        opacity: 0;
-        transform: scale(0.8) rotateX(10deg);
-        filter: blur(5px);
-    }
-    50% {
-        transform: scale(1.02) rotateX(-5deg);
-        filter: blur(2px);
-    }
-    100% {
-        opacity: 1;
-        transform: scale(1) rotateX(0deg);
-        filter: blur(0);
-    }
+    0% { opacity: 0; transform: scale(0.8) rotateX(10deg); filter: blur(5px); }
+    50% { transform: scale(1.02) rotateX(-5deg); filter: blur(2px); }
+    100% { opacity: 1; transform: scale(1) rotateX(0deg); filter: blur(0); }
 }
 
 .container .nav {
@@ -350,7 +317,6 @@ p {
     border-radius: 8px;
     padding: 10px;
     z-index: 100;
-    transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
 .container .nav .user-info .user-menu.visible {
@@ -408,8 +374,8 @@ p {
     padding: 15px;
     border: 2px solid #f2f2f2;
     border-radius: 10px;
-    transition: all 0.3s ease;
     background: #fff;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .container .main .content .job-cards .card.animate-card {
@@ -418,25 +384,14 @@ p {
 }
 
 @keyframes popIn {
-    0% {
-        opacity: 0;
-        transform: scale(0.5) rotate(5deg);
-        filter: brightness(0.8);
-    }
-    70% {
-        transform: scale(1.05) rotate(-2deg);
-        filter: brightness(1.1);
-    }
-    100% {
-        opacity: 1;
-        transform: scale(1) rotate(0deg);
-        filter: brightness(1);
-    }
+    0% { opacity: 0; transform: scale(0.5) rotate(5deg); filter: brightness(0.8); }
+    70% { transform: scale(1.05) rotate(-2deg); filter: brightness(1.1); }
+    100% { opacity: 1; transform: scale(1) rotate(0deg); filter: brightness(1); }
 }
 
 .container .main .content .job-cards .card:hover {
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
     transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
 }
 
 .container .main .content .job-cards .card .card-header {
@@ -523,21 +478,20 @@ p {
     top: 0;
     left: 0;
     width: 100%;
+    height: 100%;
     background: #fafafa;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-    border-radius: 10px;
     padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
     z-index: 10;
-    transform: translateY(-10px);
     opacity: 0;
-    visibility: hidden;
-    transition: all 0.3s ease;
+    transform: scale(0.9);
+    transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
 .container .main .content .job-cards .card:hover .mini-profile {
-    transform: translateY(0);
     opacity: 1;
-    visibility: visible;
+    transform: scale(1);
 }
 
 .container .main .content .job-cards .card .mini-profile .mini-profile-header {
@@ -545,13 +499,6 @@ p {
     gap: 12px;
     align-items: center;
     margin-bottom: 12px;
-}
-
-.container .main .content .job-cards .card .mini-profile .mini-profile-header img {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    object-fit: cover;
 }
 
 .container .main .content .job-cards .card .mini-profile .mini-profile-header h5 {
@@ -626,25 +573,8 @@ p {
 }
 
 @keyframes slideInRight {
-    0% {
-        opacity: 0;
-        transform: translateX(50px);
-    }
-    100% {
-        opacity: 1;
-        transform: translateX(0);
-    }
-}
-
-@keyframes fadeInUp {
-    0% {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    100% {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    0% { opacity: 0; transform: translateX(50px); }
+    100% { opacity: 1; transform: translateX(0); }
 }
 
 .container .main .filters .header a,
@@ -760,76 +690,12 @@ p {
 .container .main .filters .item .autocomplete .dropdown div:hover {
     background: #f2f2f2;
 }
-.job-cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 20px;
-  position: relative; /* Añadido para que el mini-profile pueda posicionarse */
-}
-
-.card {
-  background: #fff;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-  position: relative; /* Necesario para el mini-profile */
-  transition: transform 0.3s ease;
-}
-
-.card:hover {
-  transform: translateY(-5px); /* Animación suave al hacer hover */
-}
-
-.mini-profile {
-  position: absolute;
-  top: 100%; /* Aparece debajo del card */
-  left: 0;
-  width: 100%;
-  background: #fff;
-  padding: 15px;
-  border-radius: 10px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-  z-index: 10; /* Asegura que esté encima de otros elementos */
-  opacity: 0;
-  transform: translateY(10px);
-  transition: opacity 0.3s ease, transform 0.3s ease;
-}
-
-.card:hover .mini-profile {
-  opacity: 1;
-  transform: translateY(0); /* Animación al aparecer */
-}
-
-.mini-profile-header {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.mini-profile-skills .skill-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
-  margin-top: 10px;
-}
-
-.mini-profile button {
-  margin-top: 10px;
-  width: 100%;
-  padding: 8px;
-  background: #111;
-  color: #fff;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
 
 @media screen and (max-width: 1430px) {
     .sidebar .side-profile .skills h5,
     .sidebar .side-profile .skills .skill-tags {
         display: none;
     }
-
     .sidebar .side-profile button {
         margin-top: 0;
     }
@@ -839,7 +705,6 @@ p {
     .container {
         padding: 20px;
     }
-
     .sidebar {
         position: fixed;
         z-index: 100;
@@ -847,11 +712,9 @@ p {
         left: -220px;
         width: 220px;
     }
-
     .sidebar.active {
         left: 0;
     }
-
     .container .nav>button#menuToggle {
         display: flex;
     }
@@ -861,15 +724,12 @@ p {
     .container .main {
         flex-direction: column-reverse;
     }
-
     .container .nav .city {
         display: none;
     }
-
     .container .nav .search {
         width: 60%;
     }
-
     .container .main .filters {
         flex-direction: row;
         flex-wrap: wrap;
@@ -877,11 +737,9 @@ p {
         padding-left: 0;
         gap: 25px;
     }
-
     .container .main .filters .header {
         width: 100%;
     }
-
     .container .main .filters .item {
         width: 45%;
     }
@@ -892,29 +750,23 @@ p {
         flex-wrap: wrap;
         gap: 8px;
     }
-
     .container .nav .search {
         width: 100%;
         order: 1;
     }
-
     .container .nav>button {
         order: 2;
         padding: 8px 15px;
     }
-
     .container .nav .trending {
         order: 3;
     }
-
     .container .nav .user-info {
         order: 4;
     }
-
     .container .main .content .job-cards {
         grid-template-columns: 1fr;
     }
-
     .container .main .filters .item {
         width: 100%;
     }
